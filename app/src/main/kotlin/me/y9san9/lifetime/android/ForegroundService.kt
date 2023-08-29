@@ -51,6 +51,7 @@ class ForegroundService : Service() {
     private var serviceJob: Job? = null
 
     private fun moveToForeground() {
+
         startForeground(1, buildNotification())
 
         serviceJob = App.looper.countdown.time
@@ -107,6 +108,7 @@ class ForegroundService : Service() {
             .setOnlyAlertOnce(true)
             .setContentIntent(contentIntent)
             .setAutoCancel(true)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
             .build()
     }
 

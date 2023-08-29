@@ -28,8 +28,7 @@
 
         <service
             android:name=".android.ForegroundService"
-            android:enabled="true"
-            android:foregroundServiceType="mediaProjection" />
+            android:enabled="true" />
 
     </application>
 
