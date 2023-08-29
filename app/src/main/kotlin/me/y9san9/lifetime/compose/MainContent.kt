@@ -87,9 +87,9 @@ private fun CircularIndicator(
     LaunchedEffect(Unit) {
         snapshotFlow { secondAddedTime.value }.collectLatest { time ->
             animate(
-                initialValue = time.progress,
+                initialValue = time.progress(),
                 targetValue = 1f,
-                animationSpec = tween(time.updateDelay.toInt())
+                animationSpec = tween(time.updateDelay().toInt())
             ) { value, _ ->
                 animatedProgress = value
             }

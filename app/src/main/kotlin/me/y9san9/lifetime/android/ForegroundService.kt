@@ -48,6 +48,11 @@ class ForegroundService : Service() {
         return START_STICKY
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        moveToBackground()
+    }
+
     private var serviceJob: Job? = null
 
     private fun moveToForeground() {
@@ -101,13 +106,13 @@ class ForegroundService : Service() {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(title)
             .setOngoing(true)
+            .setAutoCancel(true)
             .setContentText(TimeFormatter.format(time))
             .setColorized(true)
             .setColor(getColor(R.color.color_accent))
             .setSmallIcon(R.drawable.notification_icon)
             .setOnlyAlertOnce(true)
             .setContentIntent(contentIntent)
-            .setAutoCancel(true)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
             .build()
     }

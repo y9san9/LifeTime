@@ -18,8 +18,8 @@ class MainViewModel(
         looper.stash.time.mapState { time ->
             SecondStashedTimeView(
                 string = time.map().string,
-                progress = time.secondProgress(clock).float,
-                updateDelay = looper.stash.updateDelay(time)
+                progress = { time.secondProgress(clock).float },
+                updateDelay = { looper.stash.updateDelay(time) }
             )
         }
 
@@ -29,10 +29,11 @@ class MainViewModel(
         looper.countdownState.update { !it }
     }
 
-    fun resume() {}
+    fun resume() { looper.resume() }
 
     fun pause() {
         settings.saveTime(looper.time.value)
+        if (!countdown.value) looper.pause()
     }
 
     interface Settings {
