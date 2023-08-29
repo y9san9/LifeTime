@@ -65,7 +65,7 @@ class ForegroundService : Service() {
             val notificationChannel = NotificationChannel(
                 CHANNEL_ID,
                 getString(R.string.app_name),
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH
             )
             notificationChannel.setSound(null, null)
             notificationChannel.setShowBadge(true)
