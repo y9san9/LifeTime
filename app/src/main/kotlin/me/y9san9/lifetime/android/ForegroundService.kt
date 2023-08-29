@@ -88,9 +88,7 @@ class ForegroundService : Service() {
 
         val title = getString(R.string.countdown_message)
 
-        val intent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-        }
+        val intent = Intent(this, MainActivity::class.java)
 
         val contentIntent = PendingIntent.getActivity(
             this,
