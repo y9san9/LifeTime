@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">LifeTime</string>
     <string name="notification_channel_name">Countdown Timer</string>
-    <string name="countdown_message">Time is wasting!</string>
+    <string name="countdown_message">Time is wasted!</string>
 </resources>
