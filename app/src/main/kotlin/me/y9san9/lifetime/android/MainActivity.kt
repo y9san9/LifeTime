@@ -49,22 +49,6 @@ class MainActivity : ComponentActivity() {
                 .apply(::startForegroundServiceCompat)
         }
     }
-
-    /**
-     * This really sucks, but Huawei kills foreground services LoL
-     */
-    private fun checkBatteryOptimizations() {
-        val packageName = applicationContext.packageName
-
-        val pm = applicationContext.getSystemService(POWER_SERVICE) as PowerManager
-
-        if (!pm.isIgnoringBatteryOptimizations(packageName)) {
-            val intent = Intent()
-            intent.setAction(ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
-            intent.setData(Uri.parse("package:$packageName"))
-            startActivity(intent)
-        }
-    }
 }
 
 private fun Activity.startForegroundServiceCompat(intent: Intent) {
