@@ -1,6 +1,8 @@
 package me.y9san9.lifetime.android
 
+import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -38,7 +40,15 @@ class MainActivity : ComponentActivity() {
         if (viewModel.countdown.value) {
             ForegroundService
                 .moveToForegroundIntent(this)
-                .apply(::startService)
+                .apply(::startForegroundServiceCompat)
         }
+    }
+}
+
+private fun Activity.startForegroundServiceCompat(intent: Intent) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        startForegroundService(intent)
+    } else {
+        startService(intent)
     }
 }
