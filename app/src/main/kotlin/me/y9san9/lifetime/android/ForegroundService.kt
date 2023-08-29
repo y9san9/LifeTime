@@ -1,6 +1,7 @@
 package me.y9san9.lifetime.android
 
 import android.app.*
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
@@ -91,7 +92,7 @@ class ForegroundService : Service() {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
 
-        val pendingIntent = PendingIntent.getActivity(
+        val contentIntent = PendingIntent.getActivity(
             this,
             0,
             intent,
@@ -106,13 +107,8 @@ class ForegroundService : Service() {
             .setColor(getColor(R.color.color_accent))
             .setSmallIcon(R.drawable.notification_icon)
             .setOnlyAlertOnce(true)
-            .setContentIntent(pendingIntent)
+            .setContentIntent(contentIntent)
             .setAutoCancel(true)
-            .addAction(
-                /* icon = */0,
-                /* title = */"Pause",
-                /* intent = */pendingIntent
-            )
             .build()
     }
 
@@ -125,5 +121,24 @@ class ForegroundService : Service() {
 
         // Intent Extras
         const val SERVICE_ACTION = "SERVICE_ACTION"
+
+        fun intent(context: Context, action: String): Intent {
+            return Intent(context, ForegroundService::class.java).apply {
+                putExtra(
+                    SERVICE_ACTION,
+                    action
+                )
+            }
+        }
+
+        fun moveToForegroundIntent(context: Context) = intent(
+            context = context,
+            action = MOVE_TO_FOREGROUND
+        )
+
+        fun moveToBackgroundIntent(context: Context) = intent(
+            context = context,
+            action = MOVE_TO_BACKGROUND
+        )
     }
 }

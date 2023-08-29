@@ -27,24 +27,18 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         viewModel.resume()
-        sendServiceAction(ForegroundService.MOVE_TO_BACKGROUND)
+        ForegroundService
+            .moveToBackgroundIntent(this)
+            .apply(::startService)
     }
 
     override fun onPause() {
         super.onPause()
         viewModel.pause()
-        println(viewModel.countdown.value)
         if (viewModel.countdown.value) {
-            sendServiceAction(ForegroundService.MOVE_TO_FOREGROUND)
+            ForegroundService
+                .moveToForegroundIntent(this)
+                .apply(::startService)
         }
-    }
-
-    private fun sendServiceAction(action: String) {
-        val service = Intent(this, ForegroundService::class.java)
-        service.putExtra(
-            ForegroundService.SERVICE_ACTION,
-            action
-        )
-        startService(service)
     }
 }
