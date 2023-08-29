@@ -6,8 +6,7 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.y9san9.lifetime.App
@@ -16,6 +15,9 @@ import me.y9san9.lifetime.looper.TimeFormatter
 import me.y9san9.lifetime.type.StashedTime
 
 class ForegroundService : Service() {
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(context = Dispatchers.IO + job)
+
     private val notificationManager: NotificationManager by lazy {
         ContextCompat.getSystemService(
             this,
@@ -52,7 +54,7 @@ class ForegroundService : Service() {
 
         serviceJob = App.looper.countdown.time
             .onEach(::updateNotification)
-            .launchIn(MainScope())
+            .launchIn(scope)
     }
 
     private fun moveToBackground() {
@@ -85,13 +87,15 @@ class ForegroundService : Service() {
 
         val title = getString(R.string.countdown_message)
 
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
 
         val pendingIntent = PendingIntent.getActivity(
             this,
             0,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_IMMUTABLE
         )
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
@@ -104,6 +108,11 @@ class ForegroundService : Service() {
             .setOnlyAlertOnce(true)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
+            .addAction(
+                /* icon = */0,
+                /* title = */"Pause",
+                /* intent = */pendingIntent
+            )
             .build()
     }
 
