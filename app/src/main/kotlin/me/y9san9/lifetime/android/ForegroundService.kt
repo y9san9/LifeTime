@@ -86,7 +86,13 @@ class ForegroundService : Service() {
         val title = getString(R.string.countdown_message)
 
         val intent = Intent(this, MainActivity::class.java)
-        val pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
+
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(title)
@@ -96,7 +102,7 @@ class ForegroundService : Service() {
             .setColor(getColor(R.color.color_accent))
             .setSmallIcon(R.drawable.notification_icon)
             .setOnlyAlertOnce(true)
-            .setContentIntent(pIntent)
+            .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .build()
     }
