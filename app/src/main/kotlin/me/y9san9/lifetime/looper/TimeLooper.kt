@@ -24,7 +24,7 @@ class TimeLooper(
         if (countdown) {
             this@TimeLooper.countdown.time.drop(1).collect(this)
         } else {
-            stash.time.drop(1).collect(this)
+            _time.collect(this)
         }
     }.stateIn(scope, SharingStarted.Eagerly, initialTime)
 
