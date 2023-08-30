@@ -22,7 +22,7 @@ class StashTimeLooper(
     private val _time = MutableStateFlow(base.value)
     val time: StateFlow<StashedTime> = _time.asStateFlow()
 
-    val isRunning = MutableStateFlow(false)
+    private val isRunning = MutableStateFlow(false)
 
     init {
         var currentTime by base::value

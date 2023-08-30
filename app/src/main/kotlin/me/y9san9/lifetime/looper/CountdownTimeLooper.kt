@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import me.y9san9.lifetime.stdlib.combine
+import me.y9san9.lifetime.stdlib.combineStates
 import me.y9san9.lifetime.type.*
 
 class CountdownTimeLooper(
@@ -32,8 +34,10 @@ class CountdownTimeLooper(
                 }
 
                 delay(delayTime)
-                isRunning.first { it }
-                base.first { it.countdown }
+                
+                base
+                    .combine(isRunning) { time, isRunning -> time.countdown && isRunning }
+                    .first { it }
             }
         }
 

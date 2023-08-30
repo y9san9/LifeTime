@@ -26,10 +26,7 @@ data class StashedTime(
 }
 
 fun StashedTime.withCountdown(clock: Clock) = copy(countdownSavedAtMillis = clock.currentTimeMillis())
-fun StashedTime.withoutCountdown() = copy(
-    millis = millis / 1_000 * 1_000,
-    countdownSavedAtMillis = null
-)
+fun StashedTime.withoutCountdown() = copy(countdownSavedAtMillis = null)
 
 val StashedTime.countdown: Boolean get() = countdownSavedAtMillis != null
 
