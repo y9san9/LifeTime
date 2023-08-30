@@ -1,13 +1,9 @@
 package me.y9san9.lifetime.android
 
-import android.annotation.SuppressLint
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.PowerManager
-import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -36,7 +32,7 @@ class MainActivity : ComponentActivity() {
         viewModel.resume()
         ForegroundService
             .moveToBackgroundIntent(this)
-            .apply(::startService)
+            .apply(applicationContext::startService)
     }
 
     override fun onPause() {
@@ -45,12 +41,12 @@ class MainActivity : ComponentActivity() {
         if (viewModel.countdown.value) {
             ForegroundService
                 .moveToForegroundIntent(this)
-                .apply(::startForegroundServiceCompat)
+                .apply(applicationContext::startForegroundServiceCompat)
         }
     }
 }
 
-private fun Activity.startForegroundServiceCompat(intent: Intent) {
+private fun Context.startForegroundServiceCompat(intent: Intent) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         startForegroundService(intent)
     } else {

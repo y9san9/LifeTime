@@ -33,19 +33,21 @@ class ForegroundService : Service() {
     }
 
     override fun onStartCommand(
-        intent: Intent,
+        intent: Intent?,
         flags: Int,
         startId: Int
     ): Int {
         createNotificationsChannel()
 
-        when (intent.getStringExtra(SERVICE_ACTION)) {
+        if (intent == null) moveToForeground()
+
+        when (intent?.getStringExtra(SERVICE_ACTION)) {
             MOVE_TO_FOREGROUND -> moveToForeground()
             MOVE_TO_BACKGROUND -> moveToBackground()
             else -> error("Unknown action")
         }
 
-        return START_STICKY
+        return START_STICKY_COMPATIBILITY
     }
 
     override fun onDestroy() {
@@ -56,9 +58,9 @@ class ForegroundService : Service() {
     private var serviceJob: Job? = null
 
     private fun moveToForeground() {
-
         startForeground(1, buildNotification())
 
+        serviceJob?.cancel()
         serviceJob = App.looper.countdown.time
             .onEach(::updateNotification)
             .launchIn(scope)
@@ -67,6 +69,7 @@ class ForegroundService : Service() {
     private fun moveToBackground() {
         serviceJob?.cancel()
         stopForeground(STOP_FOREGROUND_REMOVE)
+        stopSelf()
     }
 
     private fun createNotificationsChannel() {
