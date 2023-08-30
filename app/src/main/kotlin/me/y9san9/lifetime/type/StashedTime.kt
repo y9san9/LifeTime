@@ -17,7 +17,7 @@ data class StashedTime(
     companion object {
         fun zero(currentTimeMillis: Long): StashedTime {
             return StashedTime(
-                millis = 1_000_000,
+                millis = 0,
                 stashSavedAtMillis = currentTimeMillis,
                 countdownSavedAtMillis = null
             )
