@@ -34,7 +34,7 @@ class CountdownTimeLooper(
                 }
 
                 delay(delayTime)
-                
+
                 base
                     .combine(isRunning) { time, isRunning -> time.countdown && isRunning }
                     .first { it }

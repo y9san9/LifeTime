@@ -25,19 +25,17 @@ class StashTimeLooper(
     private val isRunning = MutableStateFlow(false)
 
     init {
-        var currentTime by base::value
-
         scope.launch {
             while (true) {
                 val delayTime: Long
 
                 mutex.withLock {
-                    currentTime = TimeFormula.calculateStashed(
+                    base.value = TimeFormula.calculateStashed(
                         clock.currentTimeMillis(),
-                        currentTime
+                        base.value
                     )
-                    _time.value = currentTime
-                    delayTime = updateDelay(currentTime)
+                    _time.value = base.value
+                    delayTime = updateDelay(base.value)
                 }
 
                 delay(delayTime)
