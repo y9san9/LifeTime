@@ -1,8 +1,15 @@
 package me.y9san9.lifetime.looper
 
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import me.y9san9.lifetime.type.StashedTime
 
 object TimeFormula {
+    private val _timeChangeDetected = MutableSharedFlow<Unit>()
+    val timeChangeDetected: SharedFlow<Unit> = _timeChangeDetected.asSharedFlow()
+
     /**
      * How many milliseconds being stashed per one millisecond
      * Or how many seconds being stashed per one second
@@ -23,10 +30,10 @@ object TimeFormula {
         currentTimeMillis: Long,
         time: StashedTime
     ): StashedTime {
-        val delta = currentTimeMillis - time.stashSavedAtMillis
-        require(delta >= 0) { "Cannot calculate back in time" }
+        val delta = (currentTimeMillis - time.stashSavedAtMillis)
+            .coerceAtLeast(minimumValue = 0) / 1000 * 1000
 
-        val newMillis = (delta * millisPerMillisecond).toLong() / 1000 * 1000
+        val newMillis = (delta * millisPerMillisecond).toLong()
 
         return time.copy(
             millis = time.millis + newMillis,
@@ -39,9 +46,10 @@ object TimeFormula {
         time: StashedTime
     ): StashedTime {
         time.countdownSavedAtMillis ?: return time
-        val delta = (currentTimeMillis - time.countdownSavedAtMillis) / 1000 * 1000
 
-        require(delta >= 0) { "Cannot calculate back in time" }
+        val delta = (currentTimeMillis - time.countdownSavedAtMillis)
+            .coerceAtLeast(minimumValue = 0) / 1000 * 1000
+
         return time.copy(
             millis = (time.millis - delta).coerceAtLeast(minimumValue = 0L),
             countdownSavedAtMillis = time.countdownSavedAtMillis + delta
