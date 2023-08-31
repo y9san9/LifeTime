@@ -24,15 +24,15 @@ class MainSettings(
     fun loadTime(): StashedTime? {
         val millis = preferences
             .getLong(MILLIS_KEY, -1)
-            .takeIf { it > 0 } ?: return null
+            .takeIf { it >= 0 } ?: return null
 
         val stashSavedAt = preferences
             .getLong(STASH_SAVED_AT_KEY, -1)
-            .takeIf { it > 0 } ?: return null
+            .takeIf { it >= 0 } ?: return null
 
         val countdownSavedAt = preferences
             .getLong(COUNTDOWN_SAVED_AT_KET, -1)
-            .takeIf { it > 0 }
+            .takeIf { it >= 0 }
 
         return StashedTime(millis, stashSavedAt, countdownSavedAt)
     }

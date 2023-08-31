@@ -26,6 +26,8 @@ class TimeLooper(
         } else {
             _time.collect(this)
         }
+    }.onEach { time ->
+        println("Stashed $time")
     }.stateIn(scope, SharingStarted.Eagerly, initialTime)
 
     fun pause() {
