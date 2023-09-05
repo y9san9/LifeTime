@@ -3,6 +3,7 @@ package me.y9san9.lifetime.statistics.update
 import me.y9san9.lifetime.core.TimeFormula
 import me.y9san9.lifetime.core.type.*
 import me.y9san9.lifetime.statistics.type.AppStats
+import me.y9san9.lifetime.statistics.type.AppStats.Companion.MAX_AMOUNT
 import me.y9san9.lifetime.statistics.type.date
 
 fun AppStats.update(time: StashedTime): AppStats {
@@ -34,8 +35,10 @@ private tailrec fun AppStats.LastData.update(
         time = last
     )
 
+    val resultList = listOf(recalculatedLast.millis, recalculatedLast.millis) + list.drop(n = 1)
+
     val lastData = AppStats.LastData(
-        list = listOf(recalculatedLast.millis, recalculatedLast.millis) + list.drop(n = 1),
+        list = if (resultList.size > MAX_AMOUNT) resultList.dropLast(n = 1) else resultList,
         last = recalculatedLast
     )
 

@@ -28,7 +28,7 @@ class MainViewModel(
         looper.countdownState.update { !it }
     }
 
-    fun resume() { looper.resume() }
+    fun resume() { }
 
     fun pause() { storage.saveTime(looper.time.value) }
 

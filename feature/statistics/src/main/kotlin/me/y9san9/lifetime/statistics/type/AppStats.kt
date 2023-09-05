@@ -15,7 +15,7 @@ data class AppStats(
         val last: StashedTime
     ) {
         init {
-            require(list.size in 2..31)
+            require(list.size in 2..MAX_AMOUNT)
         }
     }
     
@@ -25,6 +25,8 @@ data class AppStats(
     )
 
     companion object {
+        const val MAX_AMOUNT = 365
+
         fun initial(time: StashedTime): AppStats {
             return AppStats(
                 lastData = LastData(

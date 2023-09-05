@@ -36,6 +36,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
+        di.looper.resume()
         ForegroundService
             .moveToBackgroundIntent(this)
             .apply(applicationContext::startService)
