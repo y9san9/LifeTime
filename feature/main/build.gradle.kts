@@ -1,18 +1,14 @@
 plugins {
-    id("com.android.application")
+    id("com.android.library")
     id("org.jetbrains.kotlin.android")
 }
 
 android {
-    namespace = "me.y9san9.lifetime"
+    namespace = "me.y9san9.lifetime.feature.statistics"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "me.y9san9.lifetime"
         minSdk = 26
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
     }
 
     buildFeatures {
@@ -29,11 +25,9 @@ android {
 }
 
 dependencies {
-    implementation(projects.core)
-    implementation(projects.feature.main)
-    implementation(projects.feature.statistics)
+    implementation(libs.mdi.compose)
 
-    implementation(libs.mdi.android)
+    implementation(projects.core)
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.androidx.core)
@@ -46,7 +40,6 @@ dependencies {
     implementation(libs.compose.runtime)
     implementation(libs.compose.ui)
     implementation(libs.compose.material)
-    implementation(libs.compose.navigation)
 
     implementation(libs.vico.core)
     implementation(libs.vico.compose)

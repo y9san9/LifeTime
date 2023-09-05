@@ -7,13 +7,15 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import app.meetacy.di.android.di
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.y9san9.lifetime.App
 import me.y9san9.lifetime.R
-import me.y9san9.lifetime.looper.TimeFormatter
-import me.y9san9.lifetime.type.StashedTime
+import me.y9san9.lifetime.core.TimeFormatter
+import me.y9san9.lifetime.core.type.StashedTime
+import me.y9san9.lifetime.looper.looper
 
 class ForegroundService : Service() {
     private val job = SupervisorJob()
@@ -61,7 +63,7 @@ class ForegroundService : Service() {
         startForeground(1, buildNotification())
 
         serviceJob?.cancel()
-        serviceJob = App.looper.countdown.time
+        serviceJob = di.looper.countdown.time
             .onEach(::updateNotification)
             .launchIn(scope)
     }
@@ -73,16 +75,14 @@ class ForegroundService : Service() {
     }
 
     private fun createNotificationsChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationChannel = NotificationChannel(
-                CHANNEL_ID,
-                getString(R.string.app_name),
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            notificationChannel.setSound(null, null)
-            notificationChannel.setShowBadge(true)
-            notificationManager.createNotificationChannel(notificationChannel)
-        }
+        val notificationChannel = NotificationChannel(
+            CHANNEL_ID,
+            getString(R.string.app_name),
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        notificationChannel.setSound(null, null)
+        notificationChannel.setShowBadge(true)
+        notificationManager.createNotificationChannel(notificationChannel)
     }
 
     private fun updateNotification(time: StashedTime) {
@@ -92,8 +92,8 @@ class ForegroundService : Service() {
         )
     }
 
-    private fun buildNotification(time: StashedTime = App.looper.time.value): Notification {
-        require(App.looper.countdownState.value) { "Cannot build notification for countdown while not in the state" }
+    private fun buildNotification(time: StashedTime = di.looper.time.value): Notification {
+        require(di.looper.countdownState.value) { "Cannot build notification for countdown while not in the state" }
 
         val title = getString(R.string.countdown_message)
 

@@ -7,6 +7,8 @@ androidx-appcompat = "1.6.1"
 androidx-activity = "1.7.2"
 androidx-lifecycle = "2.6.1"
 material = "1.9.0"
+vico = "1.11.1"
+meetacyDI = "0.0.25"
 
 # compose
 composeRuntime = "1.3.3"
@@ -35,11 +37,23 @@ androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 
+
+# vico charts
+
+vico-core = { group = "com.patrykandpatrick.vico", name = "core", version.ref = "vico" }
+vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
+vico-compose-m2 = { group = "com.patrykandpatrick.vico", name = "compose-m2", version.ref = "vico" }
+
 # kotlinx libs
 
 ## coroutines
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+
+# other
+
+mdi-compose = { module = "app.meetacy.di:compose", version.ref = "meetacyDI" }
+mdi-android = { module = "app.meetacy.di:android", version.ref = "meetacyDI" }
 
 # gradle
 

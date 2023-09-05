@@ -1,35 +1,41 @@
 package me.y9san9.lifetime.android
 
-import android.content.Context
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
-import me.y9san9.lifetime.android.integration.mainViewModel
+import app.meetacy.di.android.di
 import me.y9san9.lifetime.compose.AppTheme
-import me.y9san9.lifetime.compose.integration.MainContent
+import me.y9san9.lifetime.looper.looper
+import me.y9san9.lifetime.screen.MainScreen
+import me.y9san9.lifetime.screen.NavHost
+import me.y9san9.lifetime.screen.screens
 
 
 class MainActivity : ComponentActivity() {
-    private val viewModel by mainViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, /* decorFitsSystemWindows = */ false)
 
         setContent {
-            AppTheme(isSystemInDarkTheme()) {
-                MainContent(viewModel)
+            Box(Modifier.safeDrawingPadding()) {
+                AppTheme(isSystemInDarkTheme()) {
+                    NavHost(
+                        startScreen = MainScreen,
+                        other = screens
+                    )
+                }
             }
         }
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.resume()
         ForegroundService
             .moveToBackgroundIntent(this)
             .apply(applicationContext::startService)
@@ -37,19 +43,12 @@ class MainActivity : ComponentActivity() {
 
     override fun onPause() {
         super.onPause()
-        viewModel.pause()
-        if (viewModel.countdown.value) {
+        if (di.looper.countdown.countdown.value) {
             ForegroundService
                 .moveToForegroundIntent(this)
-                .apply(applicationContext::startForegroundServiceCompat)
+                .apply(applicationContext::startForegroundService)
+        } else {
+            di.looper.pause()
         }
-    }
-}
-
-private fun Context.startForegroundServiceCompat(intent: Intent) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        startForegroundService(intent)
-    } else {
-        startService(intent)
     }
 }

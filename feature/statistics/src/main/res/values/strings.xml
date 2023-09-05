@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="statistics">Statistics</string>
+    <string name="max_time">"Max time: "</string>
+    <string name="install_date">"Install date: "</string>
+</resources>

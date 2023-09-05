@@ -1,24 +1,20 @@
 package me.y9san9.lifetime
 
 import android.app.Application
-import kotlinx.coroutines.MainScope
-import me.y9san9.lifetime.android.MainSettings
-import me.y9san9.lifetime.looper.TimeLooper
-import me.y9san9.lifetime.looper.integration.TimeLooper
+import app.meetacy.di.android.AndroidDI
+import app.meetacy.di.android.annotation.AndroidGlobalApi
+import app.meetacy.di.builder.di
+import me.y9san9.lifetime.integration.integration
 
 class App : Application() {
+    @OptIn(AndroidGlobalApi::class)
     override fun onCreate() {
         super.onCreate()
-        init(app = this)
-    }
-
-    companion object {
-        lateinit var settings: MainSettings
-        lateinit var looper: TimeLooper
-
-        private fun init(app: App) {
-            settings = MainSettings(app)
-            looper = TimeLooper(settings).apply(TimeLooper::resume)
-        }
+        AndroidDI.init(
+            application = this,
+            di = di(checkDependencies = false) {
+                integration()
+            }
+        )
     }
 }
