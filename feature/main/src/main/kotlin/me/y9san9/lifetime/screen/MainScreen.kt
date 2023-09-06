@@ -1,7 +1,6 @@
 package me.y9san9.lifetime.screen
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavBackStackEntry
@@ -11,7 +10,6 @@ import app.meetacy.di.android.di
 import me.y9san9.lifetime.compose.MainContent
 import me.y9san9.lifetime.core.android.OnPause
 import me.y9san9.lifetime.core.android.OnResume
-import me.y9san9.lifetime.core.android.viewModel
 import me.y9san9.lifetime.core.screen.Screen
 import me.y9san9.lifetime.core.screen.navigateStatistics
 import me.y9san9.lifetime.viewModel.MainViewModel

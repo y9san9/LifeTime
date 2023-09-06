@@ -27,11 +27,9 @@ import com.patrykandpatrick.vico.core.entry.entryOf
 import com.patrykandpatrick.vico.core.scroll.InitialScroll
 import me.y9san9.lifetime.core.TimeFormatter
 import me.y9san9.lifetime.core.type.format
-import me.y9san9.lifetime.core.type.localDate
 import me.y9san9.lifetime.feature.statistics.R
 import me.y9san9.lifetime.statistics.type.AppStats
 import me.y9san9.lifetime.statistics.type.dates
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun StatisticsContent(
