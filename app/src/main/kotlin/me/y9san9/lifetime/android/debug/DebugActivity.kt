@@ -1,4 +1,4 @@
-package me.y9san9.lifetime.android
+package me.y9san9.lifetime.android.debug
 
 import android.content.ClipData
 import android.content.ClipboardManager

@@ -51,4 +51,7 @@ dependencies {
     implementation(libs.vico.core)
     implementation(libs.vico.compose)
     implementation(libs.vico.compose.m2)
+
+    implementation(libs.androidx.glance)
+    implementation(libs.androidx.glance.material)
 }

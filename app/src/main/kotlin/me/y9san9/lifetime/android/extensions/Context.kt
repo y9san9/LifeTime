@@ -1,4 +1,4 @@
-package me.y9san9.lifetime.android
+package me.y9san9.lifetime.android.extensions
 
 import android.app.Activity
 import android.content.Context

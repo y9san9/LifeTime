@@ -2,8 +2,8 @@ package me.y9san9.lifetime.integration.main.looper
 
 import app.meetacy.di.builder.DIBuilder
 import kotlinx.coroutines.*
-import me.y9san9.lifetime.android.MainSettings
-import me.y9san9.lifetime.android.settings
+import me.y9san9.lifetime.android.settings.MainSettings
+import me.y9san9.lifetime.android.settings.settings
 import me.y9san9.lifetime.core.TimeFormula
 import me.y9san9.lifetime.core.type.Clock
 import me.y9san9.lifetime.core.type.StashedTime

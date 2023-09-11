@@ -14,12 +14,14 @@ import androidx.lifecycle.lifecycleScope
 import app.meetacy.di.android.di
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import me.y9san9.lifetime.android.extensions.*
+import me.y9san9.lifetime.android.foreground.CountdownForegroundService
+import me.y9san9.lifetime.android.tile.CountdownTileService
 import me.y9san9.lifetime.compose.AppTheme
 import me.y9san9.lifetime.looper.looper
 import me.y9san9.lifetime.screen.MainScreen
 import me.y9san9.lifetime.screen.NavHost
 import me.y9san9.lifetime.screen.screens
-
 
 class MainActivity : ComponentActivity() {
 
@@ -27,7 +29,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, /* decorFitsSystemWindows = */ false)
         requestNotificationsPermission()
-        notifyTileService()
 
         setContent {
             Box(Modifier.safeDrawingPadding()) {
@@ -47,34 +48,16 @@ class MainActivity : ComponentActivity() {
         requestPermissions(Manifest.permission.POST_NOTIFICATIONS, requestCode = 0)
     }
 
-    private fun notifyTileService() {
-        di.looper.countdownState.onEach {
-            CountdownTileService.requestListeningState(this)
-        }.launchIn(lifecycleScope)
-        di.looper.countdown.time.onEach {
-            CountdownTileService.requestListeningState(this)
-        }.launchIn(lifecycleScope)
-    }
-
     override fun onResume() {
         super.onResume()
-        di.looper.resume()
         isForeground = true
-        CountdownForegroundService
-            .moveToBackgroundIntent(this)
-            .apply(applicationContext::startServiceOnResume)
+        di.looper.onActivityResume(this)
     }
 
     override fun onPause() {
         super.onPause()
         isForeground = false
-        if (di.looper.countdown.countdown.value) {
-            CountdownForegroundService
-                .moveToForegroundIntent(this)
-                .apply(applicationContext::startForegroundService)
-        } else {
-            di.looper.pause()
-        }
+        di.looper.onActivityPause(this)
     }
 
     companion object {

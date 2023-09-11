@@ -1,4 +1,4 @@
-package me.y9san9.lifetime.android
+package me.y9san9.lifetime.android.foreground
 
 import android.app.*
 import android.content.Context
@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.takeWhile
 import me.y9san9.lifetime.R
+import me.y9san9.lifetime.android.tile.CountdownTileService
+import me.y9san9.lifetime.android.MainActivity
 import me.y9san9.lifetime.core.TimeFormatter
 import me.y9san9.lifetime.core.type.StashedTime
 import me.y9san9.lifetime.core.type.countdown
@@ -74,7 +76,6 @@ class CountdownForegroundService : Service() {
         serviceJob = looper.countdown.time
             .takeWhile { it.countdown }
             .onEach(::updateNotification)
-            .onEach { CountdownTileService.requestListeningState(this) }
             .onCompletion { moveToBackground() }
             .launchIn(scope)
     }

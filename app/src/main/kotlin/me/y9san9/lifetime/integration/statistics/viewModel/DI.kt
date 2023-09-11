@@ -2,7 +2,7 @@ package me.y9san9.lifetime.integration.statistics.viewModel
 
 import app.meetacy.di.android.compose.viewmodel.viewModelScope
 import app.meetacy.di.builder.DIBuilder
-import me.y9san9.lifetime.android.settings
+import me.y9san9.lifetime.android.settings.settings
 import me.y9san9.lifetime.core.type.Clock
 import me.y9san9.lifetime.looper.looper
 import me.y9san9.lifetime.statistics.type.AppStats

@@ -7,4 +7,6 @@
     <string name="lifetime_crash_title">LifeTime Crash</string>
     <string name="quick_tile_title">Waste Time</string>
     <string name="tile_countdown_message">Wasting %1$s</string>
+    <string name="widget_waste">Waste!</string>
+    <string name="widget_stop">Stop!</string>
 </resources>

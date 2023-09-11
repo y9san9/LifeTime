@@ -26,9 +26,6 @@ object MainScreen : Screen {
         val secondAddedTime = viewModel.secondStashedTime.collectAsState()
         val countdown by viewModel.countdown.collectAsState()
 
-        OnResume(viewModel::resume)
-        OnPause(viewModel::pause)
-
         MainContent(
             time = time,
             secondAddedTime = secondAddedTime,

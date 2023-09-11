@@ -18,6 +18,9 @@ composeNavigation = "2.7.2"
 composeMaterial = "1.5.1"
 composeActivity = "1.7.2"
 
+# glance
+glance = "1.0.0"
+
 [libraries]
 
 material = { module = "com.google.android.material:material", version.ref = "material" }
@@ -38,6 +41,9 @@ androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 
+# glance libs
+androidx-glance = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
+androidx-glance-material = { module = "androidx.glance:glance-material", version.ref = "glance" }
 
 # vico charts
 

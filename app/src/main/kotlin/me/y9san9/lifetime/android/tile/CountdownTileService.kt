@@ -1,17 +1,15 @@
-package me.y9san9.lifetime.android
+package me.y9san9.lifetime.android.tile
 
-import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.Tile.STATE_ACTIVE
 import android.service.quicksettings.Tile.STATE_INACTIVE
 import android.service.quicksettings.TileService
 import app.meetacy.di.android.di
-import kotlinx.coroutines.flow.updateAndGet
 import me.y9san9.lifetime.R
+import me.y9san9.lifetime.android.extensions.toggleCountdownFromTile
 import me.y9san9.lifetime.core.TimeFormatter
 import me.y9san9.lifetime.looper.looper
 
@@ -38,30 +36,8 @@ class CountdownTileService : TileService() {
 
     override fun onClick() {
         super.onClick()
-        val countdown = looper.countdownState.updateAndGet { !it }
-        if (countdown && !MainActivity.isForeground) startMainActivity()
+        looper.toggleCountdownFromTile(this)
         requestListeningState(this)
-    }
-
-    private fun startMainActivity() {
-        unlockAndRun {
-            val intent = Intent(this, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            }
-
-            if (Build.VERSION.SDK_INT >= 34) {
-                val pendingIntent = PendingIntent.getActivity(
-                    /* context = */ this,
-                    /* requestCode = */ 0,
-                    /* intent = */ intent,
-                    /* flags = */ PendingIntent.FLAG_IMMUTABLE
-                )
-                startActivityAndCollapse(pendingIntent)
-            } else {
-                @Suppress("DEPRECATION")
-                startActivityAndCollapse(intent)
-            }
-        }
     }
 
     companion object {

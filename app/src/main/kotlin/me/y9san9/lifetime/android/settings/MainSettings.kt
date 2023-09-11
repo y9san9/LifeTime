@@ -1,4 +1,4 @@
-package me.y9san9.lifetime.android
+package me.y9san9.lifetime.android.settings
 
 import android.app.Application
 import android.content.Context

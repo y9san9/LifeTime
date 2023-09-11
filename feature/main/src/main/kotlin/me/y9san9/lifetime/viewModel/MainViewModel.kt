@@ -7,7 +7,6 @@ import me.y9san9.lifetime.core.stdlib.mapState
 import me.y9san9.lifetime.core.type.*
 
 class MainViewModel(
-    private val storage: Storage,
     clock: Clock,
     private val looper: TimeLooper
 ) {
@@ -26,15 +25,6 @@ class MainViewModel(
 
     fun timerClick() {
         looper.countdownState.update { !it }
-    }
-
-    fun resume() { }
-
-    fun pause() { storage.saveTime(looper.time.value) }
-
-    interface Storage {
-        fun saveTime(time: StashedTime)
-        fun loadTime(): StashedTime?
     }
 }
 
