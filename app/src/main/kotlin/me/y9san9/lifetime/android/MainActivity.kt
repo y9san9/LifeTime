@@ -1,5 +1,7 @@
 package me.y9san9.lifetime.android
 
+import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -7,6 +9,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import app.meetacy.di.android.di
 import me.y9san9.lifetime.compose.AppTheme
@@ -21,6 +24,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, /* decorFitsSystemWindows = */ false)
+        requestNotificationsPermission()
 
         setContent {
             Box(Modifier.safeDrawingPadding()) {
@@ -32,6 +36,12 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private fun requestNotificationsPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+        if (isPermissionGranted(Manifest.permission.POST_NOTIFICATIONS)) return
+        requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0)
     }
 
     override fun onResume() {
