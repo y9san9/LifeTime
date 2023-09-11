@@ -21,13 +21,17 @@ class CountdownTileService : TileService() {
 
     override fun onStartListening() {
         super.onStartListening()
-        val enabled = looper.countdownState.value
-        tile.state = if (looper.countdownState.value) STATE_ACTIVE else STATE_INACTIVE
+        val countdown = looper.countdownState.value
+        tile.state = if (countdown) STATE_ACTIVE else STATE_INACTIVE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            tile.subtitle = if (enabled) {
+            tile.subtitle = if (countdown) {
                 val time = TimeFormatter.format(looper.countdown.time.value)
                 getString(R.string.tile_countdown_message, time)
             } else null
+        } else {
+            tile.label = if (countdown) {
+                TimeFormatter.format(looper.countdown.time.value)
+            } else getString(R.string.app_name)
         }
         tile.updateTile()
     }
