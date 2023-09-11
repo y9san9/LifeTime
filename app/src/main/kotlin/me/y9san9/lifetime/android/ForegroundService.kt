@@ -21,6 +21,7 @@ import me.y9san9.lifetime.looper.looper
 class ForegroundService : Service() {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(context = Dispatchers.IO + job)
+    private val looper = di.looper
 
     private val notificationManager: NotificationManager by lazy {
         ContextCompat.getSystemService(
@@ -42,8 +43,16 @@ class ForegroundService : Service() {
     ): Int {
         createNotificationsChannel()
 
+        if (intent == null) {
+            if (looper.countdownState.value) {
+                moveToForeground()
+            } else {
+                moveToBackground()
+            }
+        }
+
         when (intent?.getStringExtra(SERVICE_ACTION)) {
-            MOVE_TO_FOREGROUND, null -> moveToForeground()
+            MOVE_TO_FOREGROUND -> moveToForeground()
             MOVE_TO_BACKGROUND -> moveToBackground()
             else -> error("Unknown action")
         }
@@ -62,7 +71,7 @@ class ForegroundService : Service() {
         startForeground(1, buildNotification())
 
         serviceJob?.cancel()
-        serviceJob = di.looper.countdown.time
+        serviceJob = looper.countdown.time
             .onEach(::updateNotification)
             .launchIn(scope)
     }
@@ -91,8 +100,8 @@ class ForegroundService : Service() {
         )
     }
 
-    private fun buildNotification(time: StashedTime = di.looper.time.value): Notification {
-        require(di.looper.countdownState.value) { "Cannot build notification for countdown while not in the state" }
+    private fun buildNotification(time: StashedTime = looper.time.value): Notification {
+        require(looper.countdownState.value) { "Cannot build notification for countdown while not in the state" }
 
         val title = getString(R.string.countdown_message)
 
