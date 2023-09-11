@@ -41,7 +41,9 @@ class CountdownTileService : TileService() {
 
     private fun startMainActivity() {
         unlockAndRun {
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
 
             if (Build.VERSION.SDK_INT >= 34) {
                 val pendingIntent = PendingIntent.getActivity(
