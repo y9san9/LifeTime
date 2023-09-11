@@ -11,9 +11,9 @@ value class Date @UnsafeConstructor constructor(val iso8601: String) {
     companion object {
         internal const val MILLIS_PER_DAY = 24 * 60 * 60 * 1_000
 
-        fun now(): Date = LocalDate.now().domainDate
+        fun now(): Date = ofEpochMillis(System.currentTimeMillis())
         fun ofEpochDay(day: Long) = LocalDate.ofEpochDay(day).toString().let(::Date)
-        fun ofEpochMillis(long: Long) = ofEpochDay(day = long / MILLIS_PER_DAY)
+        fun ofEpochMillis(millis: Long) = ofEpochDay(day = millis / MILLIS_PER_DAY)
 
         fun parse(iso8601: String): Date {
             LocalDate.parse(iso8601)

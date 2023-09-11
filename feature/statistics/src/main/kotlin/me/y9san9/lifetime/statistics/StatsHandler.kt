@@ -1,14 +1,24 @@
 package me.y9san9.lifetime.statistics
 
-import kotlinx.coroutines.flow.StateFlow
-import me.y9san9.lifetime.core.stdlib.mapState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.*
 import me.y9san9.lifetime.core.type.StashedTime
 import me.y9san9.lifetime.statistics.type.AppStats
 import me.y9san9.lifetime.statistics.update.update
 
 class StatsHandler(
     initial: AppStats,
-    delegate: StateFlow<StashedTime>
+    delegate: StateFlow<StashedTime>,
+    scope: CoroutineScope
 ) {
-    val stats: StateFlow<AppStats> = delegate.mapState(initial::update)
+    private val _stats = MutableStateFlow(initial)
+    val stats: StateFlow<AppStats> = _stats.asStateFlow()
+
+    init {
+        delegate.onEach { time ->
+            _stats.update { stats ->
+                stats.update(time)
+            }
+        }.launchIn(scope)
+    }
 }

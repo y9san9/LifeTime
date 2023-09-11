@@ -1,5 +1,6 @@
 package me.y9san9.lifetime.statistics.viewModel
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import me.y9san9.lifetime.core.TimeFormatter
 import me.y9san9.lifetime.core.stdlib.mapState
@@ -10,7 +11,8 @@ import me.y9san9.lifetime.statistics.type.AppStats
 class StatisticsViewModel(
     private val storage: Storage,
     time: StateFlow<StashedTime>,
-    clock: Clock
+    clock: Clock,
+    scope: CoroutineScope
 ) {
     private val handler: StatsHandler
 
@@ -18,7 +20,7 @@ class StatisticsViewModel(
 
     init {
         val initial = storage.load() ?: AppStats.initial(time.value)
-        handler = StatsHandler(initial, time)
+        handler = StatsHandler(initial, time, scope)
     }
 
     val maxStashedTime: StateFlow<String> = stats.mapState { stats ->

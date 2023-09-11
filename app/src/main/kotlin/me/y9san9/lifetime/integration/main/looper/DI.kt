@@ -1,8 +1,7 @@
 package me.y9san9.lifetime.integration.main.looper
 
 import app.meetacy.di.builder.DIBuilder
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.*
 import me.y9san9.lifetime.android.MainSettings
 import me.y9san9.lifetime.android.settings
 import me.y9san9.lifetime.core.TimeFormula
@@ -16,9 +15,10 @@ fun DIBuilder.looper() {
     }
 }
 
+@OptIn(DelicateCoroutinesApi::class)
 fun TimeLooper(
     settings: MainSettings,
-    scope: CoroutineScope = MainScope(),
+    scope: CoroutineScope = GlobalScope + CoroutineName("Time Looper Worker"),
     clock: Clock = Clock.System
 ): TimeLooper {
     val loadedTime = settings.loadTime() ?: StashedTime.zero(clock.currentTimeMillis())

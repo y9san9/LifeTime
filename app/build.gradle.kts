@@ -33,7 +33,7 @@ dependencies {
     implementation(projects.feature.main)
     implementation(projects.feature.statistics)
 
-    implementation(libs.mdi.android)
+    implementation(libs.mdi.compose)
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.androidx.core)

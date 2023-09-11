@@ -1,5 +1,6 @@
 package me.y9san9.lifetime.integration.statistics.viewModel
 
+import app.meetacy.di.android.compose.viewmodel.viewModelScope
 import app.meetacy.di.builder.DIBuilder
 import me.y9san9.lifetime.android.settings
 import me.y9san9.lifetime.core.type.Clock
@@ -19,7 +20,8 @@ fun DIBuilder.statisticsViewModel() {
         StatisticsViewModel(
             storage = storage,
             time = looper.time,
-            clock = Clock.System
+            clock = Clock.System,
+            scope = viewModelScope
         )
     }
 }

@@ -11,7 +11,7 @@ fun AppStats.update(time: StashedTime): AppStats {
     if (time.stashSavedAtMillis < lastData.last.stashSavedAtMillis) return this
 
     val lastData = lastData.update(time)
-    val maxStashed = with(lastData.last) { maxStashed.update(millis, date) }
+    val maxStashed = maxStashed.update(time.millis, time.date)
 
     return copy(
         lastData = lastData,
@@ -25,17 +25,17 @@ private tailrec fun AppStats.LastData.update(
 ): AppStats.LastData {
     if (time.date == date) {
         return AppStats.LastData(
-            list = listOf(time.millis) + list.drop(n = 1),
+            list = listOf(time.millis) + this.list.drop(n = 1),
             last = time
         )
     }
 
     val recalculatedLast = TimeFormula.calculate(
         currentTimeMillis = date.tomorrow.epochMillis,
-        time = last
+        time = this.last
     )
 
-    val resultList = listOf(recalculatedLast.millis, recalculatedLast.millis) + list.drop(n = 1)
+    val resultList = listOf(recalculatedLast.millis, recalculatedLast.millis) + this.list.drop(n = 1)
 
     val lastData = AppStats.LastData(
         list = if (resultList.size > MAX_AMOUNT) resultList.dropLast(n = 1) else resultList,
