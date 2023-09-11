@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">LifeTime</string>
     <string name="notification_channel_name">Countdown Timer</string>
-    <string name="countdown_message">Time is wasted!</string>
+    <string name="notification_countdown_message">Time is wasted!</string>
     <string name="app_stopped">Oops, the app stopped occasionally</string>
     <string name="crash_reason">Send this to the developer (tap to copy): \n%1$s</string>
     <string name="lifetime_crash_title">LifeTime Crash</string>
+    <string name="quick_tile_title">Waste Time</string>
+    <string name="tile_countdown_message">Wasting %1$s</string>
 </resources>

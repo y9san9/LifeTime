@@ -1,16 +1,23 @@
 package me.y9san9.lifetime
 
 import android.app.Application
-import android.os.Handler
 import app.meetacy.di.android.AndroidDI
 import app.meetacy.di.android.annotation.AndroidGlobalApi
+import app.meetacy.di.android.di
 import app.meetacy.di.builder.di
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import me.y9san9.lifetime.android.CountdownTileService
 import me.y9san9.lifetime.android.DebugActivity
 import me.y9san9.lifetime.integration.integration
-import kotlin.concurrent.thread
+import me.y9san9.lifetime.looper.looper
 import kotlin.system.exitProcess
 
 class App : Application() {
+    @OptIn(DelicateCoroutinesApi::class)
+    private val backgroundScope = GlobalScope + CoroutineName("Application Background")
+
     @OptIn(AndroidGlobalApi::class)
     override fun onCreate() {
         super.onCreate()

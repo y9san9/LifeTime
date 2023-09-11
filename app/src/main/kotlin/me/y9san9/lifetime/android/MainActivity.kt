@@ -10,7 +10,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
 import app.meetacy.di.android.di
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import me.y9san9.lifetime.compose.AppTheme
 import me.y9san9.lifetime.looper.looper
 import me.y9san9.lifetime.screen.MainScreen
@@ -24,6 +27,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, /* decorFitsSystemWindows = */ false)
         requestNotificationsPermission()
+        notifyTileService()
 
         setContent {
             Box(Modifier.safeDrawingPadding()) {
@@ -43,22 +47,37 @@ class MainActivity : ComponentActivity() {
         requestPermissions(Manifest.permission.POST_NOTIFICATIONS, requestCode = 0)
     }
 
+    private fun notifyTileService() {
+        di.looper.countdownState.onEach {
+            CountdownTileService.requestListeningState(this)
+        }.launchIn(lifecycleScope)
+        di.looper.countdown.time.onEach {
+            CountdownTileService.requestListeningState(this)
+        }.launchIn(lifecycleScope)
+    }
+
     override fun onResume() {
         super.onResume()
         di.looper.resume()
-        ForegroundService
+        isForeground = true
+        CountdownForegroundService
             .moveToBackgroundIntent(this)
-            .apply(applicationContext::startService)
+            .apply(applicationContext::startServiceOnResume)
     }
 
     override fun onPause() {
         super.onPause()
+        isForeground = false
         if (di.looper.countdown.countdown.value) {
-            ForegroundService
+            CountdownForegroundService
                 .moveToForegroundIntent(this)
                 .apply(applicationContext::startForegroundService)
         } else {
             di.looper.pause()
         }
+    }
+
+    companion object {
+        var isForeground: Boolean = false
     }
 }

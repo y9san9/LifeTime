@@ -7,20 +7,20 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import app.meetacy.di.android.di
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.takeWhile
 import me.y9san9.lifetime.R
 import me.y9san9.lifetime.core.TimeFormatter
 import me.y9san9.lifetime.core.type.StashedTime
+import me.y9san9.lifetime.core.type.countdown
 import me.y9san9.lifetime.looper.looper
 
-class ForegroundService : Service() {
-    private val job = SupervisorJob()
-    private val scope = CoroutineScope(context = Dispatchers.IO + job)
+class CountdownForegroundService : Service() {
+    @OptIn(DelicateCoroutinesApi::class)
+    private val scope = GlobalScope + CoroutineName("Foreground Service")
     private val looper = di.looper
 
     private val notificationManager: NotificationManager by lazy {
@@ -72,7 +72,10 @@ class ForegroundService : Service() {
 
         serviceJob?.cancel()
         serviceJob = looper.countdown.time
+            .takeWhile { it.countdown }
             .onEach(::updateNotification)
+            .onEach { CountdownTileService.requestListeningState(this) }
+            .onCompletion { moveToBackground() }
             .launchIn(scope)
     }
 
@@ -103,7 +106,7 @@ class ForegroundService : Service() {
     private fun buildNotification(time: StashedTime = looper.time.value): Notification {
         require(looper.countdownState.value) { "Cannot build notification for countdown while not in the state" }
 
-        val title = getString(R.string.countdown_message)
+        val title = getString(R.string.notification_countdown_message)
 
         val intent = Intent(this, MainActivity::class.java)
 
@@ -121,7 +124,7 @@ class ForegroundService : Service() {
             .setContentText(TimeFormatter.format(time))
             .setColorized(true)
             .setColor(getColor(R.color.color_accent))
-            .setSmallIcon(R.drawable.notification_icon)
+            .setSmallIcon(R.drawable.stopwatch_icon)
             .setContentIntent(contentIntent)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
             .build()
@@ -138,7 +141,7 @@ class ForegroundService : Service() {
         const val SERVICE_ACTION = "SERVICE_ACTION"
 
         fun intent(context: Context, action: String): Intent {
-            return Intent(context, ForegroundService::class.java).apply {
+            return Intent(context, CountdownForegroundService::class.java).apply {
                 putExtra(
                     SERVICE_ACTION,
                     action
