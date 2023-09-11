@@ -58,7 +58,8 @@ class CountdownTileService : TileService() {
                 )
                 startActivityAndCollapse(pendingIntent)
             } else {
-                startActivity(intent)
+                @Suppress("DEPRECATION")
+                startActivityAndCollapse(intent)
             }
         }
     }
