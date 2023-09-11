@@ -42,15 +42,13 @@ class ForegroundService : Service() {
     ): Int {
         createNotificationsChannel()
 
-        if (intent == null) moveToForeground()
-
         when (intent?.getStringExtra(SERVICE_ACTION)) {
-            MOVE_TO_FOREGROUND -> moveToForeground()
+            MOVE_TO_FOREGROUND, null -> moveToForeground()
             MOVE_TO_BACKGROUND -> moveToBackground()
             else -> error("Unknown action")
         }
 
-        return START_STICKY_COMPATIBILITY
+        return START_STICKY
     }
 
     override fun onDestroy() {
@@ -115,7 +113,6 @@ class ForegroundService : Service() {
             .setColorized(true)
             .setColor(getColor(R.color.color_accent))
             .setSmallIcon(R.drawable.notification_icon)
-            .setOnlyAlertOnce(true)
             .setContentIntent(contentIntent)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
             .build()

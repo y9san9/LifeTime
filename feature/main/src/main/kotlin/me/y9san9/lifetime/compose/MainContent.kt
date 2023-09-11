@@ -3,7 +3,6 @@ package me.y9san9.lifetime.compose
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -13,7 +12,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.contentColorFor
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,7 +20,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import me.y9san9.lifetime.core.type.SecondStashedTimeView
 import me.y9san9.lifetime.core.type.StashedTimeView
@@ -53,7 +50,7 @@ fun MainContent(
                     onClick = { onTimerClick() }
                 )
         ) {
-            var textSize by remember { mutableStateOf(1f) }
+            var textSize by remember { mutableFloatStateOf(1f) }
 
             if (countdown) {
                 LaunchedEffect(time.string) {
@@ -88,7 +85,7 @@ private fun CircularIndicator(
     secondAddedTime: State<SecondStashedTimeView>,
     countdown: Boolean
 ) {
-    var animatedProgress by remember { mutableStateOf(0f) }
+    var animatedProgress by remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(Unit) {
         snapshotFlow { secondAddedTime.value }.collectLatest { time ->
