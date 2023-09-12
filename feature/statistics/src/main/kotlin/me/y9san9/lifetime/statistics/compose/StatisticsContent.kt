@@ -41,6 +41,7 @@ fun StatisticsContent(
     BoxWithConstraints {
         Column(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {

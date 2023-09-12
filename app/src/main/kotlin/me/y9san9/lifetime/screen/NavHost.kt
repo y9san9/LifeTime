@@ -1,5 +1,8 @@
 package me.y9san9.lifetime.screen
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,7 +16,9 @@ fun NavHost(startScreen: Screen, other: List<Screen>) {
 
     NavHost(
         navController = navController,
-        startDestination = startScreen.name
+        startDestination = startScreen.name,
+        enterTransition = { fadeIn(tween(400)) },
+        exitTransition = { fadeOut(tween(400)) }
     ) {
         for (screen in screens) {
             composable(
