@@ -48,7 +48,9 @@
                 android:value="true" />
         </service>
 
-        <receiver android:name=".android.widget.MainWidgetReceiver"
+        <receiver
+            android:name=".android.widget.MainWidgetReceiver"
+            android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

@@ -2,6 +2,8 @@
     android:initialLayout="@layout/glance_default_loading_layout"
     android:minHeight="40dp"
     android:minWidth="40dp"
+    android:targetCellHeight="1"
+    android:targetCellWidth="1"
     android:resizeMode="none"
     android:widgetCategory="home_screen"
     android:description="@string/main_widget_description">

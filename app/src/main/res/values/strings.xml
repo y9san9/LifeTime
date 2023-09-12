@@ -9,4 +9,5 @@
     <string name="tile_countdown_message">Wasting %1$s</string>
     <string name="widget_waste">Waste!</string>
     <string name="widget_stop">Stop!</string>
+    <string name="main_widget_description">Start/Stop Button</string>
 </resources>
