@@ -7,6 +7,7 @@ import me.y9san9.lifetime.core.type.*
 import me.y9san9.lifetime.statistics.StatsHandler
 import me.y9san9.lifetime.statistics.type.AppStats
 import me.y9san9.lifetime.statistics.type.date
+import java.time.ZoneId
 
 class StatisticsViewModel(
     handler: StatsHandler,
@@ -18,7 +19,7 @@ class StatisticsViewModel(
         TimeFormatter.format(stats.maxStashed.millis)
     }
     val maxStashedDate: StateFlow<String> = stats.mapState { stats ->
-        stats.maxStashed.date.formatWithYear(clock.currentDate())
+        stats.maxStashed.date.formatWithYear(clock.currentDate(ZoneId.systemDefault()))
     }
     val installedDate: StateFlow<String> = stats.mapState { stats ->
         val currentDate = stats.lastData.date

@@ -1,5 +1,6 @@
 package me.y9san9.lifetime.core.type
 
+import java.time.ZoneId
 import java.lang.System as nativeSystem
 
 interface Clock {
@@ -11,4 +12,4 @@ interface Clock {
     }
 }
 
-fun Clock.currentDate(): Date = Date.ofEpochMillis(currentTimeMillis())
+fun Clock.currentDate(zoneId: ZoneId): Date = Date.ofEpochMillis(currentTimeMillis(), zoneId)

@@ -1,9 +1,10 @@
 package me.y9san9.lifetime.statistics.update
 
 import me.y9san9.lifetime.core.TimeFormula
-import me.y9san9.lifetime.core.type.*
+import me.y9san9.lifetime.core.type.Date
+import me.y9san9.lifetime.core.type.StashedTime
+import me.y9san9.lifetime.core.type.date
 import me.y9san9.lifetime.statistics.type.AppStats
-import me.y9san9.lifetime.statistics.type.AppStats.Companion.MAX_AMOUNT_DAYS
 import me.y9san9.lifetime.statistics.type.AppStats.Companion.MAX_AMOUNT_HOURS
 
 fun AppStats.update(time: StashedTime): AppStats {
@@ -35,7 +36,7 @@ private tailrec fun AppStats.LastData.update(
     }
 
     val recalculatedLast = TimeFormula.calculate(
-        currentTimeMillis = (currentHour + 1) * MILLIS_PER_HOUR,
+        currentTimeMillis = (fromHour + 1) * MILLIS_PER_HOUR,
         time = this.last
     )
 

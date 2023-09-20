@@ -3,7 +3,9 @@
 package me.y9san9.lifetime.core.type
 
 import me.y9san9.lifetime.core.annotation.UnsafeConstructor
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 @JvmInline
@@ -11,9 +13,12 @@ value class Date @UnsafeConstructor constructor(val iso8601: String) {
     companion object {
         internal const val MILLIS_PER_DAY = 24 * 60 * 60 * 1_000
 
-        fun now(): Date = ofEpochMillis(System.currentTimeMillis())
+        fun now(zone: ZoneId): Date = ofEpochMillis(System.currentTimeMillis(), zone)
         fun ofEpochDay(day: Long) = LocalDate.ofEpochDay(day).toString().let(::Date)
-        fun ofEpochMillis(millis: Long) = ofEpochDay(day = millis / MILLIS_PER_DAY + 1)
+        fun ofEpochMillis(
+            millis: Long,
+            zone: ZoneId
+        ): Date = Instant.ofEpochMilli(millis).atZone(zone).toLocalDate().toString().let(::Date)
 
         fun parse(iso8601: String): Date {
             LocalDate.parse(iso8601)
@@ -33,6 +38,8 @@ val Date.year: Int
 
 val Date.localDate: LocalDate get() = LocalDate.parse(iso8601)
 val LocalDate.domainDate: Date get() = Date(toString())
+
+fun Date.toInstant(zone: ZoneId): Instant = localDate.atStartOfDay(zone).toInstant()
 
 val Date.yesterday: Date get() = localDate.minusDays(1).domainDate
 val Date.tomorrow: Date get() = localDate.plusDays(1).domainDate

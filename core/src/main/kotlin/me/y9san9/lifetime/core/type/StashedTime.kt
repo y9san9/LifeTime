@@ -1,6 +1,7 @@
 package me.y9san9.lifetime.core.type
 
 import me.y9san9.lifetime.core.TimeFormula.millisPerMillisecond
+import java.time.ZoneId
 
 data class StashedTime(
     val millis: Long,
@@ -25,7 +26,7 @@ data class StashedTime(
     }
 }
 
-val StashedTime.date: Date get() = Date.ofEpochMillis(stashSavedAtMillis)
+val StashedTime.date: Date get() = Date.ofEpochMillis(stashSavedAtMillis, ZoneId.systemDefault())
 
 fun StashedTime.withCountdown(clock: Clock) = copy(countdownSavedAtMillis = clock.currentTimeMillis())
 fun StashedTime.withoutCountdown() = copy(countdownSavedAtMillis = null)

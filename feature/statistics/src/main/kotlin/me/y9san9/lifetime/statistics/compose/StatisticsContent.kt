@@ -36,8 +36,13 @@ import com.patrykandpatrick.vico.core.scroll.InitialScroll
 import me.y9san9.lifetime.core.TimeFormatter
 import me.y9san9.lifetime.core.type.Date
 import me.y9san9.lifetime.core.type.format
+import me.y9san9.lifetime.core.type.localDate
+import me.y9san9.lifetime.core.type.toInstant
 import me.y9san9.lifetime.feature.statistics.R
 import me.y9san9.lifetime.statistics.type.AppStats
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZoneOffset
 
 @Composable
 fun StatisticsContent(
@@ -99,7 +104,8 @@ fun StatisticsContent(
                     valueFormatter = xFormatter,
 
                     itemPlacer = AxisItemPlacer.Horizontal.default(
-                        spacing = 24
+                        spacing = 24,
+                        offset = getChartOffset(dates)
                     )
                 ),
                 chartScrollSpec = rememberChartScrollSpec(initialScroll = InitialScroll.End),
@@ -136,12 +142,18 @@ fun StatisticsContent(
     }
 }
 
+private fun getChartOffset(dates: List<Date>): Int {
+    return dates.zipWithNext()
+        .indexOfFirst { (date, next) -> date != next }
+        .coerceAtLeast(minimumValue = 0) + 1
+}
+
 private const val MILLIS_PER_HOUR = 3_600_000
 
 private fun AppStats.LastData.dates(): List<Date> = buildList {
     var currentMillis = last.stashSavedAtMillis
     repeat(list.size) {
-        add(Date.ofEpochMillis(currentMillis))
+        add(Date.ofEpochMillis(currentMillis, ZoneId.systemDefault()))
         currentMillis -= MILLIS_PER_HOUR
     }
 }
