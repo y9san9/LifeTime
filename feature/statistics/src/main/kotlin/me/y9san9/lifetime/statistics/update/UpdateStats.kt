@@ -3,8 +3,8 @@ package me.y9san9.lifetime.statistics.update
 import me.y9san9.lifetime.core.TimeFormula
 import me.y9san9.lifetime.core.type.*
 import me.y9san9.lifetime.statistics.type.AppStats
-import me.y9san9.lifetime.statistics.type.AppStats.Companion.MAX_AMOUNT
-import me.y9san9.lifetime.statistics.type.date
+import me.y9san9.lifetime.statistics.type.AppStats.Companion.MAX_AMOUNT_DAYS
+import me.y9san9.lifetime.statistics.type.AppStats.Companion.MAX_AMOUNT_HOURS
 
 fun AppStats.update(time: StashedTime): AppStats {
     // Do nothing if invalid date provided
@@ -19,11 +19,15 @@ fun AppStats.update(time: StashedTime): AppStats {
     )
 }
 
+private const val MILLIS_PER_HOUR = 3_600_000
+
 private tailrec fun AppStats.LastData.update(
     time: StashedTime,
-    date: Date = this.date
+    fromHour: Long = this.last.stashSavedAtMillis / MILLIS_PER_HOUR
 ): AppStats.LastData {
-    if (time.date == date) {
+    val currentHour = time.stashSavedAtMillis / MILLIS_PER_HOUR
+
+    if (currentHour == fromHour) {
         return AppStats.LastData(
             list = listOf(time.millis) + this.list.drop(n = 1),
             last = time
@@ -31,18 +35,18 @@ private tailrec fun AppStats.LastData.update(
     }
 
     val recalculatedLast = TimeFormula.calculate(
-        currentTimeMillis = date.tomorrow.epochMillis,
+        currentTimeMillis = this.last.stashSavedAtMillis + MILLIS_PER_HOUR,
         time = this.last
     )
 
     val resultList = listOf(recalculatedLast.millis, recalculatedLast.millis) + this.list.drop(n = 1)
 
     val lastData = AppStats.LastData(
-        list = if (resultList.size > MAX_AMOUNT) resultList.dropLast(n = 1) else resultList,
+        list = if (resultList.size > MAX_AMOUNT_HOURS) resultList.dropLast(n = 1) else resultList,
         last = recalculatedLast
     )
 
-    return lastData.update(time, date.tomorrow)
+    return lastData.update(time, fromHour = fromHour + 1)
 }
 
 /**

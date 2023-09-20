@@ -23,8 +23,7 @@ class CountdownTileService : TileService() {
         tile.state = if (countdown) STATE_ACTIVE else STATE_INACTIVE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             tile.subtitle = if (countdown) {
-                val time = TimeFormatter.format(looper.countdown.time.value)
-                getString(R.string.tile_countdown_message, time)
+                TimeFormatter.format(looper.countdown.time.value)
             } else null
         } else {
             tile.label = if (countdown) {

@@ -1,27 +1,18 @@
 package me.y9san9.lifetime.statistics.viewModel
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import me.y9san9.lifetime.core.TimeFormatter
 import me.y9san9.lifetime.core.stdlib.mapState
 import me.y9san9.lifetime.core.type.*
 import me.y9san9.lifetime.statistics.StatsHandler
 import me.y9san9.lifetime.statistics.type.AppStats
+import me.y9san9.lifetime.statistics.type.date
 
 class StatisticsViewModel(
-    private val storage: Storage,
-    time: StateFlow<StashedTime>,
-    clock: Clock,
-    scope: CoroutineScope
+    handler: StatsHandler,
+    clock: Clock
 ) {
-    private val handler: StatsHandler
-
-    val stats: StateFlow<AppStats> get() = handler.stats
-
-    init {
-        val initial = storage.load() ?: AppStats.initial(time.value)
-        handler = StatsHandler(initial, time, scope)
-    }
+    val stats: StateFlow<AppStats> = handler.stats
 
     val maxStashedTime: StateFlow<String> = stats.mapState { stats ->
         TimeFormatter.format(stats.maxStashed.millis)
@@ -30,7 +21,7 @@ class StatisticsViewModel(
         stats.maxStashed.date.formatWithYear(clock.currentDate())
     }
     val installedDate: StateFlow<String> = stats.mapState { stats ->
-        val currentDate = clock.currentDate()
+        val currentDate = stats.lastData.date
 
         buildString {
             val formatted = stats.installedDate.formatWithYear(currentDate)
@@ -38,17 +29,6 @@ class StatisticsViewModel(
             val diff = currentDate.epochDay - stats.installedDate.epochDay
             append(" ($diff days ago)")
         }
-    }
-
-    fun resume() {}
-
-    fun pause() {
-        storage.save(handler.stats.value)
-    }
-
-    interface Storage {
-        fun save(stats: AppStats)
-        fun load(): AppStats?
     }
 }
 

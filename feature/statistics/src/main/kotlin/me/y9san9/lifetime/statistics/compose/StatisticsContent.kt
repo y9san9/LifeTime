@@ -1,11 +1,13 @@
 package me.y9san9.lifetime.statistics.compose
 
+import android.view.animation.Interpolator
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Slider
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -16,20 +18,26 @@ import androidx.compose.ui.unit.dp
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
+import com.patrykandpatrick.vico.compose.chart.layout.fullWidth
 import com.patrykandpatrick.vico.compose.chart.line.lineChart
 import com.patrykandpatrick.vico.compose.chart.line.lineSpec
 import com.patrykandpatrick.vico.compose.chart.scroll.rememberChartScrollSpec
 import com.patrykandpatrick.vico.core.axis.AxisItemPlacer
 import com.patrykandpatrick.vico.core.axis.AxisPosition
 import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
+import com.patrykandpatrick.vico.core.chart.DefaultPointConnector
+import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
+import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout.Companion
+import com.patrykandpatrick.vico.core.entry.ChartEntryModel
+import com.patrykandpatrick.vico.core.entry.FloatEntry
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import com.patrykandpatrick.vico.core.entry.entryOf
 import com.patrykandpatrick.vico.core.scroll.InitialScroll
 import me.y9san9.lifetime.core.TimeFormatter
+import me.y9san9.lifetime.core.type.Date
 import me.y9san9.lifetime.core.type.format
 import me.y9san9.lifetime.feature.statistics.R
 import me.y9san9.lifetime.statistics.type.AppStats
-import me.y9san9.lifetime.statistics.type.dates
 
 @Composable
 fun StatisticsContent(
@@ -58,14 +66,9 @@ fun StatisticsContent(
             Spacer(modifier = Modifier.height(20.dp))
 
             val values = stats.lastData.list.asReversed()
-            val dates = stats.lastData.dates.asReversed()
+            val dates = remember(stats) { stats.lastData.dates().asReversed() }
 
-            val chartEntryModel = dates.withIndex().zip(values) { x, y ->
-                entryOf(
-                    x = x.index.toFloat(),
-                    y = y.toFloat()
-                )
-            }.let { entryModelOf(it) }
+            val chartEntryModel = buildChartModel(dates, values)
 
             val yFormatter = AxisValueFormatter<AxisPosition.Vertical.Start> { value, _ ->
                 TimeFormatter.format(value.toLong())
@@ -78,9 +81,12 @@ fun StatisticsContent(
             Chart(
                 chart = lineChart(
                     listOf(
-                        lineSpec(MaterialTheme.colors.primary)
+                        lineSpec(
+                            lineColor = MaterialTheme.colors.primary,
+                            pointConnector = DefaultPointConnector(cubicStrength = 0.6f)
+                        )
                     ),
-                    spacing = 100.dp
+                    spacing = 4.dp
                 ),
                 model = chartEntryModel,
                 startAxis = rememberStartAxis(
@@ -91,9 +97,15 @@ fun StatisticsContent(
                 ),
                 bottomAxis = rememberBottomAxis(
                     valueFormatter = xFormatter,
+
+                    itemPlacer = AxisItemPlacer.Horizontal.default(
+                        spacing = 24
+                    )
                 ),
                 chartScrollSpec = rememberChartScrollSpec(initialScroll = InitialScroll.End),
-                isZoomEnabled = true
+                isZoomEnabled = true,
+                horizontalLayout = HorizontalLayout.fullWidth(endPadding = 50.dp),
+                marker = rememberMarker()
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -122,4 +134,26 @@ fun StatisticsContent(
             )
         }
     }
+}
+
+private const val MILLIS_PER_HOUR = 3_600_000
+
+private fun AppStats.LastData.dates(): List<Date> = buildList {
+    var currentMillis = last.stashSavedAtMillis
+    repeat(list.size) {
+        add(Date.ofEpochMillis(currentMillis))
+        currentMillis -= MILLIS_PER_HOUR
+    }
+}
+
+private fun buildChartModel(
+    dates: List<Date>,
+    values: List<Long>
+): ChartEntryModel = dates.withIndex().zip(values) { x, y ->
+    entryOf(
+        x = x.index.toFloat(),
+        y = y.toFloat()
+    )
+}.let {
+    entryModelOf(it)
 }

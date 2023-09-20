@@ -9,16 +9,26 @@ import me.y9san9.lifetime.core.annotation.UnsafeConstructor
 import me.y9san9.lifetime.core.type.Date
 import me.y9san9.lifetime.core.type.StashedTime
 import me.y9san9.lifetime.statistics.type.AppStats
+import me.y9san9.lifetime.statistics.type.upgradeFromDaysToHours
 
 val DI.settings: MainSettings by Dependency
 
 class MainSettings(
-    private val application: Application
+    application: Application
 ) {
     private val preferences = application.getSharedPreferences(
         /* name = */ "main-settings",
         /* mode = */ Context.MODE_PRIVATE
     )
+
+    @Suppress("DEPRECATION")
+    fun init() = upgrade {
+        case(VERSION_CHANGED_STATS_RATE) {
+            val stats = loadStatsOld()
+            if (stats != null)
+                saveStats(stats.upgradeFromDaysToHours())
+        }
+    }
 
     fun saveTime(time: StashedTime) {
         preferences.edit {
@@ -52,7 +62,7 @@ class MainSettings(
                 putLong(STATS_LAST_COUNTDOWN_SAVED_AT_KEY, countdownSavedAtMillis ?: -1)
             }
             for ((i, dayMillis) in appStats.lastData.list.withIndex()) {
-                putLong(statsDayKey(i), dayMillis)
+                putLong(statsHourKey(i), dayMillis)
             }
             with(appStats.maxStashed) {
                 putLong(MAX_STASHED_MILLIS_KEY, millis)
@@ -64,6 +74,60 @@ class MainSettings(
 
     @OptIn(UnsafeConstructor::class)
     fun loadStats(): AppStats? {
+        val millis = preferences
+            .getLong(STATS_LAST_MILLIS_KEY, -1)
+            .takeIf { it >= 0 } ?: return null
+
+        val stashSavedAt = preferences
+            .getLong(STATS_LAST_STASH_SAVED_AT_KEY, -1)
+            .takeIf { it >= 0 } ?: return null
+
+        val countdownSavedAt = preferences
+            .getLong(STATS_LAST_COUNTDOWN_SAVED_AT_KEY, -1)
+            .takeIf { it >= 0 }
+
+        val last = StashedTime(millis, stashSavedAt, countdownSavedAt)
+
+        val list = buildList {
+            val indexes = generateSequence(seed = 0) { it + 1 }
+
+            for (day in indexes) {
+                val dayMillis = preferences
+                    .getLong(statsHourKey(day), -1)
+                    .takeIf { it >= 0 } ?: break
+                add(dayMillis)
+            }
+        }
+
+        val lastData = AppStats.LastData(list, last)
+
+        val maxStashedMillis = preferences
+            .getLong(MAX_STASHED_MILLIS_KEY, -1)
+            .takeIf { it >= 0 } ?: return null
+
+        val maxStashedDate = preferences
+            .getString(MAX_STASHED_DATE_KEY, null)
+            ?: return null
+
+        val maxStashed = AppStats.Max(maxStashedMillis, Date(maxStashedDate))
+
+        val installedMillis = preferences
+            .getString(INSTALLED_MILLIS_KEY, null)
+            ?.let(::Date)
+            ?: return null
+
+        return AppStats(lastData, maxStashed, installedMillis)
+    }
+
+    fun loadVersion(): Int = preferences.getInt(VERSION_KEY, LAST_VERSION)
+    fun saveVersion(version: Int) = preferences.edit {
+        putInt(VERSION_KEY, version)
+    }
+
+    @Suppress("DEPRECATION")
+    @Deprecated(message = "loadStats() should be used instead")
+    @OptIn(UnsafeConstructor::class)
+    fun loadStatsOld(): AppStats? {
         val millis = preferences
             .getLong(STATS_LAST_MILLIS_KEY, -1)
             .takeIf { it >= 0 } ?: return null
@@ -118,11 +182,22 @@ class MainSettings(
         private const val STATS_LAST_MILLIS_KEY = "stats_last_millis"
         private const val STATS_LAST_STASH_SAVED_AT_KEY = "stats_last_stash_saved_at"
         private const val STATS_LAST_COUNTDOWN_SAVED_AT_KEY = "stats_last_countdown_saved_at"
+        @Deprecated(message = "STATS_HOUR_X_KEY should be used instead")
         private const val STATS_DAY_X_KEY = "stats_day_"
+        private const val STATS_HOUR_X_KEY = "stats_hour_"
         private const val MAX_STASHED_MILLIS_KEY = "max_stashed_millis"
         private const val MAX_STASHED_DATE_KEY = "max_stashed_date"
         private const val INSTALLED_MILLIS_KEY = "installed_millis"
 
+        @Suppress("DEPRECATION")
+        @Deprecated(message = "statsHourKey() should be used instead")
         fun statsDayKey(x: Int) = STATS_DAY_X_KEY + x
+
+        fun statsHourKey(x: Int) = STATS_HOUR_X_KEY + x
+
+        // versioning
+        private const val VERSION_KEY = "version"
+        private const val VERSION_CHANGED_STATS_RATE = 0
+        private const val LAST_VERSION = 1
     }
 }

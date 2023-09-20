@@ -13,7 +13,7 @@ value class Date @UnsafeConstructor constructor(val iso8601: String) {
 
         fun now(): Date = ofEpochMillis(System.currentTimeMillis())
         fun ofEpochDay(day: Long) = LocalDate.ofEpochDay(day).toString().let(::Date)
-        fun ofEpochMillis(millis: Long) = ofEpochDay(day = millis / MILLIS_PER_DAY)
+        fun ofEpochMillis(millis: Long) = ofEpochDay(day = millis / MILLIS_PER_DAY + 1)
 
         fun parse(iso8601: String): Date {
             LocalDate.parse(iso8601)

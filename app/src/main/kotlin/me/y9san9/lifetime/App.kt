@@ -14,12 +14,14 @@ import me.y9san9.lifetime.android.tile.CountdownTileService
 import me.y9san9.lifetime.android.widget.MainWidget
 import me.y9san9.lifetime.integration.integration
 import me.y9san9.lifetime.looper.looper
+import me.y9san9.lifetime.statistics.statsHandler
 import kotlin.system.exitProcess
 
 class App : Application() {
     @OptIn(DelicateCoroutinesApi::class)
     private val backgroundScope = GlobalScope + CoroutineName("Application Background")
     private val looper get() = di.looper
+    private val statsHandler get() = di.statsHandler
     private val settings get() = di.settings
 
     @OptIn(AndroidGlobalApi::class)
@@ -32,10 +34,11 @@ class App : Application() {
                 integration()
             }
         )
+        settings.init()
 
         setDebugActivity()
         notifyServicesAboutState()
-        saveLooperTime()
+        saveWorkersData()
     }
 
     private fun setDebugActivity() {
@@ -56,9 +59,12 @@ class App : Application() {
         }.launchIn(backgroundScope)
     }
 
-    private fun saveLooperTime() {
+    private fun saveWorkersData() {
         looper.time
             .onEach(settings::saveTime)
+            .launchIn(backgroundScope)
+        statsHandler.stats
+            .onEach(settings::saveStats)
             .launchIn(backgroundScope)
     }
 }

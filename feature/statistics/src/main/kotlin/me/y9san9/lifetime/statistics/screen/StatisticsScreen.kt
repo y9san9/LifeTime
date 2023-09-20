@@ -26,9 +26,6 @@ object StatisticsScreen : Screen {
         val maxStashedDate by viewModel.maxStashedDate.collectAsState()
         val installDate by viewModel.installedDate.collectAsState()
 
-        OnResume(viewModel::resume)
-        OnPause(viewModel::pause)
-
         StatisticsContent(stats, maxStashedTime, maxStashedDate, installDate)
     }
 }
