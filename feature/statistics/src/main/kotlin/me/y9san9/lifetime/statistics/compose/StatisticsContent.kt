@@ -144,8 +144,7 @@ fun StatisticsContent(
 
 private fun getChartOffset(dates: List<Date>): Int {
     return dates.zipWithNext()
-        .indexOfFirst { (date, next) -> date != next }
-        .coerceAtLeast(minimumValue = 0) + 1
+        .indexOfFirst { (date, next) -> date != next } + 1
 }
 
 private const val MILLIS_PER_HOUR = 3_600_000
