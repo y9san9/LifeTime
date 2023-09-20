@@ -35,7 +35,7 @@ private tailrec fun AppStats.LastData.update(
     }
 
     val recalculatedLast = TimeFormula.calculate(
-        currentTimeMillis = this.last.stashSavedAtMillis + MILLIS_PER_HOUR,
+        currentTimeMillis = (currentHour + 1) * MILLIS_PER_HOUR,
         time = this.last
     )
 

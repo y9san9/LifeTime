@@ -22,11 +22,13 @@ class MainSettings(
     )
 
     @Suppress("DEPRECATION")
-    fun init() = upgrade {
-        case(VERSION_CHANGED_STATS_RATE) {
+    fun init() {
+        if (preferences.getLong(statsDayKey(0), -1) != -1L) {
             val stats = loadStatsOld()
-            if (stats != null)
-                saveStats(stats.upgradeFromDaysToHours())
+            if (stats != null) {
+                saveStats(stats.upgradeFromDaysToHours().also { println("AAAAA: $it") })
+            }
+            saveVersion(0)
         }
     }
 
@@ -61,8 +63,8 @@ class MainSettings(
                 putLong(STATS_LAST_STASH_SAVED_AT_KEY, stashSavedAtMillis)
                 putLong(STATS_LAST_COUNTDOWN_SAVED_AT_KEY, countdownSavedAtMillis ?: -1)
             }
-            for ((i, dayMillis) in appStats.lastData.list.withIndex()) {
-                putLong(statsHourKey(i), dayMillis)
+            for ((i, hourMillis) in appStats.lastData.list.withIndex()) {
+                putLong(statsHourKey(i), hourMillis)
             }
             with(appStats.maxStashed) {
                 putLong(MAX_STASHED_MILLIS_KEY, millis)
@@ -197,7 +199,6 @@ class MainSettings(
 
         // versioning
         private const val VERSION_KEY = "version"
-        private const val VERSION_CHANGED_STATS_RATE = 0
-        private const val LAST_VERSION = 1
+        private const val LAST_VERSION = 0
     }
 }
