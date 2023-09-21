@@ -26,9 +26,10 @@ class MainSettings(
         if (preferences.getLong(statsDayKey(0), -1) != -1L) {
             val stats = loadStatsOld()
             if (stats != null) {
-                saveStats(stats.upgradeFromDaysToHours().also { println("AAAAA: $it") })
+                saveStats(stats.upgradeFromDaysToHours())
             }
             saveVersion(0)
+            clearStatsOld()
         }
     }
 
@@ -173,6 +174,23 @@ class MainSettings(
             ?: return null
 
         return AppStats(lastData, maxStashed, installedMillis)
+    }
+
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        message = "May be used only for migration"
+    )
+    private fun clearStatsOld() {
+        val indexes = generateSequence(seed = 0) { it + 1 }
+
+        for (day in indexes) {
+            preferences
+                .getLong(statsDayKey(day), -1)
+                .takeIf { it >= 0 } ?: break
+            preferences.edit {
+                remove(statsDayKey(day))
+            }
+        }
     }
 
     companion object {
