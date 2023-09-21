@@ -22,7 +22,7 @@ data class AppStats(
     )
 
     companion object {
-        const val MAX_AMOUNT_DAYS = 365
+        private const val MAX_AMOUNT_DAYS = 365
         const val MAX_AMOUNT_HOURS = MAX_AMOUNT_DAYS * 24
 
         fun initial(time: StashedTime): AppStats {

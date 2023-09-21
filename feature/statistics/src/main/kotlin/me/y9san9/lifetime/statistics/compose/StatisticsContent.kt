@@ -1,13 +1,12 @@
 package me.y9san9.lifetime.statistics.compose
 
-import android.view.animation.Interpolator
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Slider
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -27,22 +26,16 @@ import com.patrykandpatrick.vico.core.axis.AxisPosition
 import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
 import com.patrykandpatrick.vico.core.chart.DefaultPointConnector
 import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
-import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout.Companion
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel
-import com.patrykandpatrick.vico.core.entry.FloatEntry
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import com.patrykandpatrick.vico.core.entry.entryOf
 import com.patrykandpatrick.vico.core.scroll.InitialScroll
 import me.y9san9.lifetime.core.TimeFormatter
 import me.y9san9.lifetime.core.type.Date
 import me.y9san9.lifetime.core.type.format
-import me.y9san9.lifetime.core.type.localDate
-import me.y9san9.lifetime.core.type.toInstant
 import me.y9san9.lifetime.feature.statistics.R
 import me.y9san9.lifetime.statistics.type.AppStats
-import java.time.Instant
 import java.time.ZoneId
-import java.time.ZoneOffset
 
 @Composable
 fun StatisticsContent(
@@ -102,7 +95,6 @@ fun StatisticsContent(
                 ),
                 bottomAxis = rememberBottomAxis(
                     valueFormatter = xFormatter,
-
                     itemPlacer = AxisItemPlacer.Horizontal.default(
                         spacing = 24,
                         offset = getChartOffset(dates)
