@@ -25,6 +25,7 @@ import com.patrykandpatrick.vico.core.extension.copyColor
 import com.patrykandpatrick.vico.core.marker.Marker
 import com.patrykandpatrick.vico.core.marker.MarkerLabelFormatter
 import me.y9san9.lifetime.core.TimeFormatter
+import me.y9san9.lifetime.statistics.compose.logarithmic.logLabelFormatter
 
 private const val LABEL_BACKGROUND_SHADOW_RADIUS = 4f
 private const val LABEL_BACKGROUND_SHADOW_DY = 2f
@@ -92,10 +93,7 @@ internal fun rememberMarker(): Marker {
                         LABEL_BACKGROUND_SHADOW_DY.pixels
             }
         }.apply {
-            labelFormatter = MarkerLabelFormatter { markedEntries, _ ->
-                val entry = markedEntries.firstOrNull()?.entry ?: return@MarkerLabelFormatter "WTF"
-                TimeFormatter.format(entry.y.toLong())
-            }
+            labelFormatter = logLabelFormatter { _, y -> TimeFormatter.format(y.toLong()) }
             indicatorSizeDp = INDICATOR_SIZE_DP
             onApplyEntryColor = { entryColor ->
                 indicatorOuterComponent.color = entryColor.copyColor(INDICATOR_OUTER_COMPONENT_ALPHA)

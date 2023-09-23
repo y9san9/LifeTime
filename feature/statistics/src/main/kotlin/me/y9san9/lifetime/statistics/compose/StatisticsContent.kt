@@ -34,6 +34,8 @@ import me.y9san9.lifetime.core.TimeFormatter
 import me.y9san9.lifetime.core.type.Date
 import me.y9san9.lifetime.core.type.format
 import me.y9san9.lifetime.feature.statistics.R
+import me.y9san9.lifetime.statistics.compose.logarithmic.logarithmic
+import me.y9san9.lifetime.statistics.compose.logarithmic.logarithmicAxisFormatter
 import me.y9san9.lifetime.statistics.type.AppStats
 import java.time.ZoneId
 
@@ -66,14 +68,21 @@ fun StatisticsContent(
             val values = stats.lastData.list.asReversed()
             val dates = remember(stats) { stats.lastData.dates().asReversed() }
 
-            val chartEntryModel = buildChartModel(dates, values)
-
-            val yFormatter = AxisValueFormatter<AxisPosition.Vertical.Start> { value, _ ->
-                TimeFormatter.format(value.toLong())
+            val chartEntryModel = remember(stats) {
+                buildChartModel(dates, values)
             }
 
-            val xFormatter = AxisValueFormatter<AxisPosition.Horizontal.Bottom> { value, _ ->
-                dates[value.toInt()].format("d MMMM")
+            val yFormatter = remember {
+                logarithmicAxisFormatter<AxisPosition.Vertical.Start> { value ->
+                    println("NORMAL $value")
+                    TimeFormatter.format(value.toLong())
+                }
+            }
+
+            val xFormatter = remember(dates) {
+                AxisValueFormatter<AxisPosition.Horizontal.Bottom> { value, _ ->
+                    dates[value.toInt()].format("d MMMM")
+                }
             }
 
             Chart(
@@ -155,8 +164,12 @@ private fun buildChartModel(
 ): ChartEntryModel = dates.withIndex().zip(values) { x, y ->
     entryOf(
         x = x.index.toFloat(),
-        y = y.toFloat()
+        y = y.toFloat().also {
+            println("NORMAL FIRST $it")
+        }
     )
+}.logarithmic().onEach {
+    println("LOGARITHIC ${it.y}")
 }.let {
     entryModelOf(it)
 }
