@@ -7,7 +7,5 @@ fun logLabelFormatter(
 ) = MarkerLabelFormatter { markedEntries, _ ->
     val x = markedEntries.first().entry.x
     val y = markedEntries.first().entry.y
-
-    println()
     format(x, chartInverse(y))
 }

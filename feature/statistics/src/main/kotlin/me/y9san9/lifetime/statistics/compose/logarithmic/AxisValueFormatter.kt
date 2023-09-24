@@ -6,6 +6,5 @@ import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
 inline fun <T : AxisPosition.Vertical> logarithmicAxisFormatter(
     crossinline format: (value: Float) -> String
 ) = AxisValueFormatter<T> { value, _ ->
-    println()
     format(chartInverse(value))
 }

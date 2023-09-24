@@ -74,7 +74,6 @@ fun StatisticsContent(
 
             val yFormatter = remember {
                 logarithmicAxisFormatter<AxisPosition.Vertical.Start> { value ->
-                    println("NORMAL $value")
                     TimeFormatter.format(value.toLong())
                 }
             }
@@ -164,12 +163,8 @@ private fun buildChartModel(
 ): ChartEntryModel = dates.withIndex().zip(values) { x, y ->
     entryOf(
         x = x.index.toFloat(),
-        y = y.toFloat().also {
-            println("NORMAL FIRST $it")
-        }
+        y = y.toFloat()
     )
-}.logarithmic().onEach {
-    println("LOGARITHIC ${it.y}")
-}.let {
+}.logarithmic().let {
     entryModelOf(it)
 }
