@@ -34,6 +34,7 @@ import me.y9san9.lifetime.core.TimeFormatter
 import me.y9san9.lifetime.core.type.Date
 import me.y9san9.lifetime.core.type.format
 import me.y9san9.lifetime.feature.statistics.R
+import me.y9san9.lifetime.statistics.compose.logarithmic.chartMaxLog
 import me.y9san9.lifetime.statistics.compose.logarithmic.logarithmic
 import me.y9san9.lifetime.statistics.compose.logarithmic.logarithmicAxisFormatter
 import me.y9san9.lifetime.statistics.type.AppStats
@@ -72,8 +73,12 @@ fun StatisticsContent(
                 buildChartModel(dates, values)
             }
 
+            val maxLog = remember(stats) {
+                chartMaxLog(stats.lastData.list.maxOf(Long::toFloat).also { println("MAXXX $it; LIST: ${stats.lastData.list}") } )
+            }
+
             val yFormatter = remember {
-                logarithmicAxisFormatter<AxisPosition.Vertical.Start> { value ->
+                logarithmicAxisFormatter<AxisPosition.Vertical.Start>(maxLog) { value ->
                     TimeFormatter.format(value.toLong())
                 }
             }
@@ -111,7 +116,7 @@ fun StatisticsContent(
                 chartScrollSpec = rememberChartScrollSpec(initialScroll = InitialScroll.End),
                 isZoomEnabled = true,
                 horizontalLayout = HorizontalLayout.fullWidth(endPadding = 50.dp),
-                marker = rememberMarker()
+                marker = rememberMarker(maxLog)
             )
 
             Spacer(modifier = Modifier.height(20.dp))
