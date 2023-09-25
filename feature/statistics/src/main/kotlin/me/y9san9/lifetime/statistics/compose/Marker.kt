@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.patrykandpatrick.vico.compose.component.lineComponent
 import com.patrykandpatrick.vico.compose.component.overlayingComponent
@@ -61,11 +62,13 @@ internal fun rememberMarker(
             color = Color.Black.copy(alpha = 0.2f).toArgb()
         )
     }
+    val labelColor = MaterialTheme.colors.onSurface
     val label = textComponent {
         background = labelBackground
         lineCount = LABEL_LINE_COUNT
         padding = labelPadding
         typeface = Typeface.MONOSPACE
+        color = labelColor.toArgb()
     }
     val indicatorInnerComponent = shapeComponent(Shapes.pillShape, MaterialTheme.colors.surface)
     val indicatorCenterComponent = shapeComponent(Shapes.pillShape, Color.White)
