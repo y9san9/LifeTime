@@ -74,7 +74,7 @@ fun StatisticsContent(
             }
 
             val maxLog = remember(stats) {
-                chartMaxLog(stats.lastData.list.maxOf(Long::toFloat).also { println("MAXXX $it; LIST: ${stats.lastData.list}") } )
+                chartMaxLog(stats.lastData.list.maxOf(Long::toFloat))
             }
 
             val yFormatter = remember {
