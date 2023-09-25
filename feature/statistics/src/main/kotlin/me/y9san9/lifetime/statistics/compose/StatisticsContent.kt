@@ -73,12 +73,16 @@ fun StatisticsContent(
                 buildChartModel(dates, values)
             }
 
+            val latest = remember(stats) {
+                stats.lastData.list.firstOrNull()?.toFloat() ?: 0f
+            }
+
             val maxLog = remember(stats) {
-                chartMaxLog(stats.lastData.list.maxOf(Long::toFloat))
+                chartMaxLog(latest, stats.lastData.list.maxOf(Long::toFloat))
             }
 
             val yFormatter = remember {
-                logarithmicAxisFormatter<AxisPosition.Vertical.Start>(maxLog) { value ->
+                logarithmicAxisFormatter<AxisPosition.Vertical.Start>(maxLog, latest) { value ->
                     TimeFormatter.format(value.toLong())
                 }
             }
@@ -116,7 +120,7 @@ fun StatisticsContent(
                 chartScrollSpec = rememberChartScrollSpec(initialScroll = InitialScroll.End),
                 isZoomEnabled = true,
                 horizontalLayout = HorizontalLayout.fullWidth(endPadding = 50.dp),
-                marker = rememberMarker(maxLog)
+                marker = rememberMarker(maxLog, latest)
             )
 
             Spacer(modifier = Modifier.height(20.dp))

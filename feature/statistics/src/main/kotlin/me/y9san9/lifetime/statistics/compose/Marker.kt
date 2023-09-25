@@ -48,7 +48,10 @@ private val guidelineThickness = 2.dp
 private val guidelineShape = DashedShape(Shapes.pillShape, GUIDELINE_DASH_LENGTH_DP, GUIDELINE_GAP_LENGTH_DP)
 
 @Composable
-internal fun rememberMarker(maxLog: Float): Marker {
+internal fun rememberMarker(
+    maxLog: Float,
+    latest: Float
+): Marker {
     val labelBackgroundColor = MaterialTheme.colors.surface
     val labelBackground = remember(labelBackgroundColor) {
         ShapeComponent(labelBackgroundShape, labelBackgroundColor.toArgb()).setShadow(
@@ -93,7 +96,7 @@ internal fun rememberMarker(maxLog: Float): Marker {
                         LABEL_BACKGROUND_SHADOW_DY.pixels
             }
         }.apply {
-            labelFormatter = logLabelFormatter(maxLog) { _, y -> TimeFormatter.format(y.toLong()) }
+            labelFormatter = logLabelFormatter(maxLog, latest) { _, y -> TimeFormatter.format(y.toLong()) }
             indicatorSizeDp = INDICATOR_SIZE_DP
             onApplyEntryColor = { entryColor ->
                 indicatorOuterComponent.color = entryColor.copyColor(INDICATOR_OUTER_COMPONENT_ALPHA)

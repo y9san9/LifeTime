@@ -4,9 +4,10 @@ import com.patrykandpatrick.vico.core.marker.MarkerLabelFormatter
 
 fun logLabelFormatter(
     maxLog: Float,
+    latest: Float,
     format: (x: Float, y: Float) -> String
 ) = MarkerLabelFormatter { markedEntries, _ ->
     val x = markedEntries.first().entry.x
     val y = markedEntries.first().entry.y
-    format(x, chartInverse(maxLog, y))
+    format(x, chartInverse(maxLog, latest, y))
 }
