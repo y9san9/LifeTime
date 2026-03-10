@@ -5,6 +5,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Required for UnlockLauncherService on Android 14+ (shortService type). -->
+    <!-- Ignored on older API levels. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SHORT_SERVICE" />
 
     <application
         android:name=".App"
@@ -29,10 +32,33 @@
         </activity>
         <activity android:name="me.y9san9.lifetime.android.debug.DebugActivity" />
 
+        <!-- Popup shown on every phone unlock -->
+        <activity
+            android:name=".android.UnlockPopupActivity"
+            android:exported="false"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:theme="@style/Theme.LifeTime" />
+
         <service
             android:name=".android.foreground.CountdownForegroundService"
             android:foregroundServiceType="mediaPlayback"
             android:enabled="true" />
+
+        <!-- Ephemeral bridge service: starts the popup, lives for milliseconds -->
+        <service
+            android:name=".android.unlock.UnlockLauncherService"
+            android:foregroundServiceType="shortService"
+            android:exported="false" />
+
+        <!-- Listens for phone unlock; triggers UnlockLauncherService -->
+        <receiver
+            android:name=".android.unlock.UnlockReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".android.tile.CountdownTileService"

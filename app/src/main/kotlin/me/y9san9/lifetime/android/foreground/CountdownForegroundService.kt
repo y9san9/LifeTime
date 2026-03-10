@@ -51,9 +51,10 @@ class CountdownForegroundService : Service() {
             } else {
                 moveToBackground()
             }
+            return START_STICKY
         }
 
-        when (intent?.getStringExtra(SERVICE_ACTION)) {
+        when (intent.getStringExtra(SERVICE_ACTION)) {
             MOVE_TO_FOREGROUND -> moveToForeground()
             MOVE_TO_BACKGROUND -> moveToBackground()
             else -> error("Unknown action")
@@ -70,6 +71,11 @@ class CountdownForegroundService : Service() {
     private var serviceJob: Job? = null
 
     private fun moveToForeground() {
+        // Guard: stop immediately if countdown was cancelled before we got here.
+        if (!looper.countdownState.value) {
+            stopSelf()
+            return
+        }
         startForeground(1, buildNotification())
 
         serviceJob?.cancel()

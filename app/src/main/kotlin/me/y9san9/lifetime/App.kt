@@ -1,6 +1,10 @@
 package me.y9san9.lifetime
 
 import android.app.Application
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import app.meetacy.di.android.AndroidDI
 import app.meetacy.di.android.annotation.AndroidGlobalApi
 import app.meetacy.di.android.di
@@ -8,6 +12,7 @@ import app.meetacy.di.builder.di
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import me.y9san9.lifetime.android.debug.DebugActivity
 import me.y9san9.lifetime.android.settings.settings
 import me.y9san9.lifetime.android.tile.CountdownTileService
@@ -39,6 +44,7 @@ class App : Application() {
         setDebugActivity()
         notifyServicesAboutState()
         saveWorkersData()
+        registerScreenOffReceiver()
     }
 
     private fun setDebugActivity() {
@@ -66,5 +72,25 @@ class App : Application() {
         statsHandler.stats
             .onEach(settings::saveStats)
             .launchIn(backgroundScope)
+    }
+
+    /**
+     * Stops the countdown whenever the screen turns off (phone locked).
+     *
+     * ACTION_SCREEN_OFF cannot be received by manifest-declared receivers —
+     * it must be registered dynamically. The Application context lives for
+     * the entire process lifetime, so this receiver is always active while
+     * the app process is alive (which is guaranteed when countdown is running,
+     * because CountdownForegroundService keeps the process alive).
+     */
+    private fun registerScreenOffReceiver() {
+        registerReceiver(
+            object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent) {
+                    looper.countdownState.update { false }
+                }
+            },
+            IntentFilter(Intent.ACTION_SCREEN_OFF)
+        )
     }
 }
