@@ -5,9 +5,6 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <!-- Required for UnlockLauncherService on Android 14+ (shortService type). -->
-    <!-- Ignored on older API levels. -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SHORT_SERVICE" />
 
     <application
         android:name=".App"
@@ -45,13 +42,7 @@
             android:foregroundServiceType="mediaPlayback"
             android:enabled="true" />
 
-        <!-- Ephemeral bridge service: starts the popup, lives for milliseconds -->
-        <service
-            android:name=".android.unlock.UnlockLauncherService"
-            android:foregroundServiceType="shortService"
-            android:exported="false" />
-
-        <!-- Listens for phone unlock; triggers UnlockLauncherService -->
+        <!-- Listens for phone unlock; shows the waste-time popup directly -->
         <receiver
             android:name=".android.unlock.UnlockReceiver"
             android:exported="false">
