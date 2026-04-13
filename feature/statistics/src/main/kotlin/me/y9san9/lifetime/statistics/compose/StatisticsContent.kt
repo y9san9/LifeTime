@@ -45,7 +45,10 @@ fun StatisticsContent(
     stats: AppStats,
     maxStashedTime: String,
     maxStashedDate: String,
-    installDate: String
+    installDate: String,
+    hoursPerDay: String,
+    onHoursPerDayChange: (String) -> Unit,
+    showHoursPerDayError: Boolean,
 ) {
     BoxWithConstraints {
         Column(
@@ -146,6 +149,14 @@ fun StatisticsContent(
                     append(installDate)
                 },
                 color = MaterialTheme.colors.onBackground
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            SettingsContent(
+                hoursPerDay = hoursPerDay,
+                onHoursPerDayChange = onHoursPerDayChange,
+                showHoursPerDayError = showHoursPerDayError,
             )
         }
     }

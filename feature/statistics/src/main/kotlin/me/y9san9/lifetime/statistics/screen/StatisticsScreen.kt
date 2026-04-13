@@ -3,6 +3,7 @@ package me.y9san9.lifetime.statistics.screen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import app.meetacy.di.android.compose.viewmodel.viewModel
@@ -26,6 +27,17 @@ object StatisticsScreen : Screen {
         val maxStashedDate by viewModel.maxStashedDate.collectAsState()
         val installDate by viewModel.installedDate.collectAsState()
 
-        StatisticsContent(stats, maxStashedTime, maxStashedDate, installDate)
+        val hoursPerDay by viewModel.hoursPerDay.collectAsState()
+        val showHoursPerDayError by viewModel.showHoursPerDayError.collectAsState()
+
+        StatisticsContent(
+            stats = stats,
+            maxStashedTime = maxStashedTime,
+            maxStashedDate = maxStashedDate,
+            installDate = installDate,
+            hoursPerDay = hoursPerDay,
+            onHoursPerDayChange = viewModel::setHoursPerDay,
+            showHoursPerDayError = showHoursPerDayError,
+        )
     }
 }

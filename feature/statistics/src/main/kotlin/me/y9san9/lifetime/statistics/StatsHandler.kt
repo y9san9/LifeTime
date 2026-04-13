@@ -7,13 +7,15 @@ import kotlinx.coroutines.flow.*
 import me.y9san9.lifetime.core.type.StashedTime
 import me.y9san9.lifetime.statistics.type.AppStats
 import me.y9san9.lifetime.statistics.update.update
+import me.y9san9.lifetime.core.type.StashGain
 
 val DI.statsHandler: StatsHandler by Dependency
 
 class StatsHandler(
     initial: AppStats,
     delegate: StateFlow<StashedTime>,
-    scope: CoroutineScope
+    gain: StateFlow<StashGain>,
+    scope: CoroutineScope,
 ) {
     private val _stats = MutableStateFlow(initial)
     val stats: StateFlow<AppStats> = _stats.asStateFlow()
@@ -21,7 +23,7 @@ class StatsHandler(
     init {
         delegate.onEach { time ->
             _stats.update { stats ->
-                stats.update(time)
+                stats.update(time, gain.value)
             }
         }.launchIn(scope)
     }

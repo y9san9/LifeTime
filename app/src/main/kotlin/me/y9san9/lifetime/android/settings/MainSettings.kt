@@ -1,5 +1,8 @@
 package me.y9san9.lifetime.android.settings
 
+import me.y9san9.lifetime.core.type.StashGain
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import android.app.Application
 import android.content.Context
 import androidx.core.content.edit
@@ -122,6 +125,24 @@ class MainSettings(
         return AppStats(lastData, maxStashed, installedMillis)
     }
 
+    private val _stashGain = MutableStateFlow(loadStashGain() ?: StashGain.Default)
+    val stashGain: StateFlow<StashGain> = _stashGain
+
+    fun saveStashGain(gain: StashGain) {
+        preferences.edit {
+            putLong(SETTING_STASH_GAIN_MILLIS, gain.millisPerMillisecond.toRawBits())
+        }
+        _stashGain.value = gain
+    }
+
+    private fun loadStashGain(): StashGain? {
+        val millis = preferences.getLong(SETTING_STASH_GAIN_MILLIS, -1)
+        if (millis == -1L) {
+            return null
+        }
+        return StashGain(Double.fromBits(millis))
+    }
+
     fun loadVersion(): Int = preferences.getInt(VERSION_KEY, LAST_VERSION)
     fun saveVersion(version: Int) = preferences.edit {
         putInt(VERSION_KEY, version)
@@ -198,6 +219,9 @@ class MainSettings(
         private const val STASH_SAVED_AT_KEY = "stash_saved_at"
         private const val COUNTDOWN_SAVED_AT_KEY = "countdown_saved_at"
 
+        // settings
+        private const val SETTING_STASH_GAIN_MILLIS = "stash_gain_millis"
+
         // stats
         private const val STATS_LAST_MILLIS_KEY = "stats_last_millis"
         private const val STATS_LAST_STASH_SAVED_AT_KEY = "stats_last_stash_saved_at"
@@ -217,6 +241,6 @@ class MainSettings(
 
         // versioning
         private const val VERSION_KEY = "version"
-        private const val LAST_VERSION = 0
+        private const val LAST_VERSION = 1
     }
 }

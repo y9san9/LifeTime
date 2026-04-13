@@ -6,12 +6,16 @@ import me.y9san9.lifetime.core.type.StashedTime
 import me.y9san9.lifetime.core.type.date
 import me.y9san9.lifetime.statistics.type.AppStats
 import me.y9san9.lifetime.statistics.type.AppStats.Companion.MAX_AMOUNT_HOURS
+import me.y9san9.lifetime.core.type.StashGain
 
-fun AppStats.update(time: StashedTime): AppStats {
+fun AppStats.update(
+    time: StashedTime,
+    gain: StashGain,
+): AppStats {
     // Do nothing if invalid date provided
     if (time.stashSavedAtMillis < lastData.last.stashSavedAtMillis) return this
 
-    val lastData = lastData.update(time)
+    val lastData = lastData.update(time, gain)
     val maxStashed = maxStashed.update(time.millis, time.date)
 
     return copy(
@@ -24,6 +28,7 @@ private const val MILLIS_PER_HOUR = 3_600_000
 
 private tailrec fun AppStats.LastData.update(
     time: StashedTime,
+    gain: StashGain,
     fromHour: Long = this.last.stashSavedAtMillis / MILLIS_PER_HOUR
 ): AppStats.LastData {
     val currentHour = time.stashSavedAtMillis / MILLIS_PER_HOUR
@@ -37,7 +42,8 @@ private tailrec fun AppStats.LastData.update(
 
     val recalculatedLast = TimeFormula.calculate(
         currentTimeMillis = (fromHour + 1) * MILLIS_PER_HOUR,
-        time = this.last
+        time = this.last,
+        gain = gain,
     )
 
     val resultList = listOf(recalculatedLast.millis, recalculatedLast.millis) + this.list.drop(n = 1)
@@ -47,7 +53,7 @@ private tailrec fun AppStats.LastData.update(
         last = recalculatedLast
     )
 
-    return lastData.update(time, fromHour = fromHour + 1)
+    return lastData.update(time, gain, fromHour = fromHour + 1)
 }
 
 /**

@@ -1,13 +1,12 @@
 package me.y9san9.lifetime.core.type
 
-import me.y9san9.lifetime.core.TimeFormula.millisPerMillisecond
 import java.time.ZoneId
 
 data class StashedTime(
     val millis: Long,
     val stashSavedAtMillis: Long,
     // null if there is no countdown
-    val countdownSavedAtMillis: Long?
+    val countdownSavedAtMillis: Long?,
 ) {
     init {
         require(millis >= 0)
@@ -41,8 +40,11 @@ val StashedTime.secondMillis: Int get() = (millis % 1000).toInt()
 val StashedTime.minuteSeconds: Int get() = (seconds % 60).toInt()
 val StashedTime.hourMinutes: Int get() = (minutes % 60).toInt()
 
-fun StashedTime.secondProgress(clock: Clock): Progress {
-    val secondDelay = 1.0 / millisPerMillisecond * 1_000
+fun StashedTime.secondProgress(
+    clock: Clock,
+    gain: StashGain,
+): Progress {
+    val secondDelay = 1.0 / gain.millisPerMillisecond * 1_000
     val targetTime = stashSavedAtMillis + secondDelay
     val progress = 100 - ((targetTime - clock.currentTimeMillis()).coerceAtLeast(0.0) / secondDelay * 100).toInt()
     if (progress < 10) return Progress.Min

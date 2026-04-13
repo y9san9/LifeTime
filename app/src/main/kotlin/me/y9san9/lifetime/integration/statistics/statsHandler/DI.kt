@@ -23,5 +23,5 @@ fun StatsHandler(
     scope: CoroutineScope = GlobalScope + CoroutineName("Stats Handler Worker")
 ): StatsHandler {
     val initial = settings.loadStats() ?: AppStats.initial(looper.time.value)
-    return StatsHandler(initial, looper.time, scope)
+    return StatsHandler(initial, looper.time, settings.stashGain, scope)
 }

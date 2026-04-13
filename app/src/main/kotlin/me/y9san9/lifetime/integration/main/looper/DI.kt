@@ -22,11 +22,12 @@ fun TimeLooper(
     clock: Clock = Clock.System
 ): TimeLooper {
     val loadedTime = settings.loadTime() ?: StashedTime.zero(clock.currentTimeMillis())
-    val actualTime = TimeFormula.calculate(clock.currentTimeMillis(), loadedTime)
+    val actualTime = TimeFormula.calculate(clock.currentTimeMillis(), loadedTime, settings.stashGain.value)
 
     return TimeLooper(
         initialTime = actualTime,
         scope = scope,
-        clock = clock
+        clock = clock,
+        stashGain = settings.stashGain,
     )
 }

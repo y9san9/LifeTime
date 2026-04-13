@@ -7,16 +7,18 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import me.y9san9.lifetime.core.type.Clock
 import me.y9san9.lifetime.core.type.StashedTime
+import me.y9san9.lifetime.core.type.StashGain
 
 class TimeLooper(
     initialTime: StashedTime,
+    stashGain: StateFlow<StashGain>,
     scope: CoroutineScope,
     clock: Clock
 ) {
     private val mutex = Mutex()
     private val _time = MutableStateFlow(initialTime)
 
-    val stash: StashTimeLooper = StashTimeLooper(scope, _time, mutex, clock)
+    val stash: StashTimeLooper = StashTimeLooper(scope, _time, mutex, clock, stashGain)
     val countdown: CountdownTimeLooper = CountdownTimeLooper(scope, _time, mutex, clock)
     val countdownState: MutableStateFlow<Boolean> get() = countdown.countdown
 

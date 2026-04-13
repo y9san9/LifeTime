@@ -8,7 +8,8 @@ import me.y9san9.lifetime.core.type.*
 
 class MainViewModel(
     clock: Clock,
-    private val looper: TimeLooper
+    private val looper: TimeLooper,
+    private val gain: StateFlow<StashGain>,
 ) {
     val stashedTime: StateFlow<StashedTimeView> = looper.time.mapState(StashedTime::map)
 
@@ -16,7 +17,7 @@ class MainViewModel(
         looper.stash.time.mapState { time ->
             SecondStashedTimeView(
                 string = time.map().string,
-                progress = { time.secondProgress(clock).float },
+                progress = { time.secondProgress(clock, gain.value).float },
                 updateDelay = { looper.stash.updateDelay(time) }
             )
         }

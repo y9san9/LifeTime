@@ -1,5 +1,6 @@
 package me.y9san9.lifetime.core
 
+import me.y9san9.lifetime.core.type.StashGain
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -9,33 +10,27 @@ object TimeFormula {
     private val _timeChangeDetected = MutableSharedFlow<Unit>()
     val timeChangeDetected: SharedFlow<Unit> = _timeChangeDetected.asSharedFlow()
 
-    /**
-     * How many milliseconds being stashed per one millisecond
-     * Or how many seconds being stashed per one second
-     * Or how many minutes being stashed per one minute
-     * And so on
-     */
-    const val millisPerMillisecond: Double = 0.08333333333
-
     fun calculate(
         currentTimeMillis: Long,
-        time: StashedTime
+        time: StashedTime,
+        gain: StashGain,
     ): StashedTime {
-        val stashedTime = calculateStashed(currentTimeMillis, time)
+        val stashedTime = calculateStashed(currentTimeMillis, time, gain)
         return calculateCountdown(currentTimeMillis, stashedTime)
     }
 
     fun calculateStashed(
         currentTimeMillis: Long,
-        time: StashedTime
+        time: StashedTime,
+        gain: StashGain,
     ): StashedTime {
         val delta = (currentTimeMillis - time.stashSavedAtMillis).coerceAtLeast(minimumValue = 0)
 
-        val newMillis = (delta * millisPerMillisecond).toLong() / 1_000 * 1_000
+        val newMillis = (delta * gain.millisPerMillisecond).toLong() / 1_000 * 1_000
 
         return time.copy(
             millis = time.millis + newMillis,
-            stashSavedAtMillis = time.stashSavedAtMillis + (newMillis / millisPerMillisecond).toLong()
+            stashSavedAtMillis = time.stashSavedAtMillis + (newMillis / gain.millisPerMillisecond).toLong()
         )
     }
 

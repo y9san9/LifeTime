@@ -3,6 +3,7 @@ package me.y9san9.lifetime.integration.statistics.viewModel
 import app.meetacy.di.builder.DIBuilder
 import me.y9san9.lifetime.core.type.Clock
 import me.y9san9.lifetime.statistics.statsHandler
+import me.y9san9.lifetime.android.settings.settings
 import me.y9san9.lifetime.statistics.viewModel.StatisticsViewModel
 
 fun DIBuilder.statisticsViewModel() {
@@ -10,6 +11,8 @@ fun DIBuilder.statisticsViewModel() {
         StatisticsViewModel(
             handler = statsHandler,
             clock = Clock.System,
+            gain = settings.stashGain.value,
+            setGain = settings::saveStashGain,
         )
     }
 }
