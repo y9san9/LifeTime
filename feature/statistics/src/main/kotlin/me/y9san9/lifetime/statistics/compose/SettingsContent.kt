@@ -4,6 +4,7 @@ import androidx.compose.material.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.ui.res.stringResource
 import me.y9san9.lifetime.feature.statistics.R
@@ -35,6 +36,9 @@ fun SettingsContent(
         },
         isError = showHoursPerDayError,
         modifier = Modifier.fillMaxWidth(),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            textColor = MaterialTheme.colors.onBackground,
+        ),
     )
 
 }
