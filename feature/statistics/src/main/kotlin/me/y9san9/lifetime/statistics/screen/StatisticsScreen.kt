@@ -15,6 +15,8 @@ import me.y9san9.lifetime.statistics.compose.StatisticsContent
 import me.y9san9.lifetime.statistics.viewModel.StatisticsViewModel
 
 object StatisticsScreen : Screen {
+    override val name = "StatisticsScreen"
+
     @Composable
     override fun Content(
         controller: NavController,

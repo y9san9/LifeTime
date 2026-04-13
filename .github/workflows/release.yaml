@@ -1,0 +1,37 @@
+name: Release
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > keystore.jks
+
+      - name: Build release APK
+        env:
+          KEYSTORE_PATH: ${{ github.workspace }}/keystore.jks
+          KEYSTORE_STORE_PASSWORD: ${{ secrets.KEYSTORE_STORE_PASSWORD }}
+          KEYSTORE_KEY_ALIAS: ${{ secrets.KEYSTORE_KEY_ALIAS }}
+          KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
+          GITHUB_USERNAME: github
+          GITHUB_TOKEN: ${{ secrets.LIBRARY_TOKEN }}
+        run: ./gradlew assembleRelease
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: app/build/outputs/apk/release/app-release.apk

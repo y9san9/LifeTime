@@ -15,6 +15,8 @@ import me.y9san9.lifetime.core.screen.navigateStatistics
 import me.y9san9.lifetime.viewModel.MainViewModel
 
 object MainScreen : Screen {
+    override val name = "MainScreen"
+
     @Composable
     override fun Content(
         controller: NavController,

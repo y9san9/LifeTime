@@ -26,6 +26,28 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file(System.getenv("KEYSTORE_PATH") ?: "release.jks")
+            storePassword = System.getenv("KEYSTORE_STORE_PASSWORD")
+            keyAlias = System.getenv("KEYSTORE_KEY_ALIAS")
+            keyPassword = System.getenv("KEYSTORE_KEY_PASSWORD")
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
 }
 
 dependencies {

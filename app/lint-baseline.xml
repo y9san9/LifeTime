@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.0.1" type="baseline" client="gradle" dependencies="false" name="AGP (8.0.1)" variant="all" version="8.0.1">
+
+    <issue
+        id="OldTargetApi"
+        message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the android.os.Build.VERSION_CODES javadoc for details."
+        errorLine1="        targetSdk = 34"
+        errorLine2="        ~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="13"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="RestrictedApi"
+        message="BitmapImageProvider can only be called from within the same library group (referenced groupId=`androidx.glance` from groupId=`LifeTime`)"
+        errorLine1="        this.background(BitmapImageProvider(bitmap))"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/kotlin/me/y9san9/lifetime/android/widget/MainWidget.kt"
+            line="130"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="RestrictedApi"
+        message="BitmapImageProvider can only be called from within the same library group (referenced groupId=`androidx.glance` from groupId=`LifeTime`)"
+        errorLine1="        this.background(BitmapImageProvider(bitmap))"
+        errorLine2="                                            ~~~~~~">
+        <location
+            file="src/main/kotlin/me/y9san9/lifetime/android/widget/MainWidget.kt"
+            line="130"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="This folder configuration (`v26`) is unnecessary; `minSdkVersion` is 26. Merge all the resources in this folder into `mipmap-anydpi`.">
+        <location
+            file="src/main/res/mipmap-anydpi-v26"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.mipmap.ic_launcher_round` appears to be unused"
+        errorLine1="&lt;adaptive-icon xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        errorLine2="^">
+        <location
+            file="src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.notification_channel_name` appears to be unused"
+        errorLine1="    &lt;string name=&quot;notification_channel_name&quot;>Countdown Timer&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="3"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.quick_tile_title` appears to be unused"
+        errorLine1="    &lt;string name=&quot;quick_tile_title&quot;>Waste Time&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="8"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MonochromeLauncherIcon"
+        message="The application adaptive icon is missing a monochrome tag"
+        errorLine1="&lt;adaptive-icon xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        errorLine2="^">
+        <location
+            file="src/main/res/mipmap-anydpi-v26/ic_launcher.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/stopwatch_icon.png` in densityless folder">
+        <location
+            file="src/main/res/drawable/stopwatch_icon.png"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/stopwatch_solid.png` in densityless folder">
+        <location
+            file="src/main/res/drawable/stopwatch_solid.png"/>
+    </issue>
+
+</issues>
